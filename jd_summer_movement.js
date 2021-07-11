@@ -9,7 +9,7 @@ https://raw.githubusercontent.com/smiek2221/scripts/master/MovementFaker.js
 
 */
 const $ = new Env('燃动夏季');
-const MovementFaker = require('./jd_MovementFaker.js')
+const jd_MovementFaker = require('./jd_MovementFaker.js')
 // const MovementFaker = require('./ZooFaker.js')
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
