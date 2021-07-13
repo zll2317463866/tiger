@@ -2,7 +2,7 @@
 入口 极速版 赚金币 
 分享到QQ查看邀请码 packetId就是
 #自定义变量
-export tytpacketId=""
+export tytpacketId="729c32e8d6f14405bcfcbf43d5a26eec-amRfNTk3YTU0NDc4ZDA2Mw!!"
  [task_local]
 #柠檬推一推
 0 0 * * * http://nm66.top/jd_tyt.js, tag=柠檬推一推, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
