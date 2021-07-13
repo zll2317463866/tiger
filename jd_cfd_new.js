@@ -1,7 +1,7 @@
-##此脚本需要安装两个依赖:
-【财富岛依赖安装命令】
-docker exec -it QL bash -c "npm install axios"
-docker exec -it QL bash -c "npm install date-fns"
+//此脚本需要安装两个依赖:
+//【财富岛依赖安装命令】
+//docker exec -it QL bash -c "npm install axios"
+//docker exec -it QL bash -c "npm install date-fns"
 
 
 const CryptoJS = require('crypto-js');
