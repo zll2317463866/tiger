@@ -2,8 +2,7 @@
 14 10 * * * https://raw.githubusercontent.com/smiek2221/scripts/master/jd_sign_graphics.js
 只支持nodejs环境
 需要安装依赖 
-npm i png-js 或者 npm i png-js -S
-
+//docker exec -it QL bash -c "cd scripts && npm i -S png-js"
 */
 
 const validator = require('./shufflewzc_faker2_jd_JDJRValidator_Pure.js');
