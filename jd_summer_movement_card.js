@@ -1,8 +1,9 @@
-/**
- *  燃动夏季
- *  一次性脚本，尝试领取会员奖励
- *  如果你已经是会员，则会领取奖励成功，若不是会员，则需要手动卡开
- * */
+/*
+
+cron 10 8 * * * jd_summer_movement_card.js
+
+
+ */
 const $ = new Env('燃动夏季领会员奖励');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -14,11 +15,12 @@ const URL = 'https://wbbny.m.jd.com/babelDiy/Zeus/2rtpffK8wqNyPBH6wyUDuBKoAbCt/i
 const SYNTAX_MODULE = '!function(n){var r={};function o(e){if(r[e])';
 const REG_SCRIPT = /<script type="text\/javascript" src="([^><]+\/(app\.\w+\.js))\">/gm;
 const REG_ENTRY = /(__webpack_require__\(__webpack_require__.s=)(\d+)(?=\)})/;
-const needModuleId = 355
+const needModuleId = 356
 const DATA = {appid:'50085',sceneid:'OY217hPageh5'};
 let smashUtils;
+const UA =  `jdpingou;iPhone;10.0.6;${Math.ceil(Math.random()*2+12)}.${Math.ceil(Math.random()*4)};${randomString(40)};`;
 class MovementFaker {
-  constructor(cookie) {this.cookie = cookie;this.ua = require('./USER_AGENTS.js').USER_AGENT;}
+  constructor(cookie) {this.cookie = cookie;this.ua = UA;}
   async run() {if (!smashUtils) {await this.init();}
     var t = Math.floor(1e7 + 9e7 * Math.random()).toString();
     var e = smashUtils.get_risk_result({id: t,data: {random: t}}).log;
@@ -75,6 +77,7 @@ if ($.isNode()) {
     $.getdata("CookieJD2"),
     ...$.toObj($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
+
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
@@ -83,6 +86,7 @@ if ($.isNode()) {
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.cookie = cookiesArr[i];
+      uuid = getUUID();
       $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
       $.isLogin = true;
@@ -109,8 +113,8 @@ if ($.isNode()) {
 
 })().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();})
 
-
 async function main(){
+  console.log(UA);
   $.homeData = {};
   $.taskList = [];
   await takePostRequest('olympicgames_home');
@@ -130,14 +134,14 @@ async function main(){
   }
   bubbleInfos = $.homeData.result.bubbleInfos;
   let runFlag = false;
-  for(let item of bubbleInfos){
-    if(item.type != 7){
-      $.collectId = item.type
-      await takePostRequest('olympicgames_collectCurrency');
-      await $.wait(1000);
-      runFlag = true;
-    }
-  }
+  // for(let item of bubbleInfos){
+  //   if(item.type != 7){
+  //     $.collectId = item.type
+  //     await takePostRequest('olympicgames_collectCurrency');
+  //     await $.wait(1000);
+  //     runFlag = true;
+  //   }
+  // }
   await $.wait(1000);
   await takePostRequest('olympicgames_getTaskDetail');
   await $.wait(1000);
@@ -159,13 +163,14 @@ async function main(){
 async function getBody($) {const zf = new MovementFaker($.cookie);const ss = await zf.run();return ss;}
 
 async function doTask(){
+  $.runFlag = true;
   //做任务
-  for (let i = 0; i < $.taskList.length; i++) {
+  for (let i = 0; i < $.taskList.length && $.runFlag; i++) {
     $.oneTask = $.taskList[i];
     if (($.oneTask.taskType === 21 || $.oneTask.taskType === 26) && $.oneTask.status === 1){
       console.log(`尝试领取已经是会员的奖励`);
       $.activityInfoList = $.oneTask.brandMemberVos ;
-      for (let j = 0; j < $.activityInfoList.length; j++) {
+      for (let j = 0; j < $.activityInfoList.length && $.runFlag; j++) {
         $.oneActivityInfo = $.activityInfoList[j];
         if ($.oneActivityInfo.status !== 1 || !$.oneActivityInfo.taskToken) {
           continue;
@@ -178,6 +183,9 @@ async function doTask(){
           await $.wait(2000);
         }else{
           console.log(`任务失败,${$.callbackInfo.data.bizMsg || ''}`);
+          if($.callbackInfo.data.bizMsg === '活动太火爆了'){
+            $.runFlag = false;
+          }
           await $.wait(3000);
         }
       }
@@ -233,6 +241,7 @@ async function takePostRequest(type) {
   }else{
     myRequest['url'] = `https://api.m.jd.com/client.action?advId=${type}`;
   }
+  //console.log(JSON.stringify(myRequest));
   return new Promise(async resolve => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -246,7 +255,16 @@ async function takePostRequest(type) {
     })
   })
 }
-
+function getUUID() {
+  var n = (new Date).getTime();
+  let uuid="xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+  uuid = uuid.replace(/[xy]/g, function (e) {
+    var t = (n + 16 * Math.random()) % 16 | 0;
+    return n = Math.floor(n / 16),
+      ("x" == e ? t : 3 & t | 8).toString(16)
+  }).replace(/-/g, "")
+  return uuid
+}
 async function dealReturn(type, data) {
   try {
     data = JSON.parse(data);
@@ -347,66 +365,13 @@ async function dealReturn(type, data) {
       console.log(`未判断的异常${type}`);
   }
 }
-function takeGetRequest(){
-  return new Promise(async resolve => {
-    $.get({
-      url:`https://ms.jr.jd.com/gw/generic/mission/h5/m/finishReadMission?reqData={%22missionId%22:%22${$.taskId}%22,%22readTime%22:8}`,
-      headers:{
-        'Origin' : `https://prodev.m.jd.com`,
-        'Cookie': $.cookie,
-        'Connection' : `keep-alive`,
-        'Accept' : `*/*`,
-        'Referer' : `https://prodev.m.jd.com`,
-        'Host' : `ms.jr.jd.com`,
-        'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
-        'Accept-Encoding' : `gzip, deflate, br`,
-        'Accept-Language' : `zh-cn`
-      }
-    }, (err, resp, data) => {
-      try {
-        data = JSON.parse(data);
-        if (data.resultCode === 0) {
-          console.log(`任务完成`);
-        }
-      } catch (e) {
-        $.logErr(e, resp)
-      } finally {
-        resolve();
-      }
-    })
-  })
-}
 
-//领取奖励
-function callbackResult(info) {
-  return new Promise((resolve) => {
-    let url = {
-      url: `https://api.m.jd.com/?functionId=qryViewkitCallbackResult&client=wh5&clientVersion=1.0.0&body=${info}&_timestamp=` + Date.now(),
-      headers: {
-        'Origin': `https://bunearth.m.jd.com`,
-        'Cookie': $.cookie,
-        'Connection': `keep-alive`,
-        'Accept': `*/*`,
-        'Host': `api.m.jd.com`,
-        'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
-        'Accept-Encoding': `gzip, deflate, br`,
-        'Accept-Language': `zh-cn`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Referer': 'https://bunearth.m.jd.com'
-      }
-    }
-
-    $.get(url, async (err, resp, data) => {
-      try {
-        data = JSON.parse(data);
-        console.log(data.toast.subTitle)
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve()
-      }
-    })
-  })
+function randomString(e) {
+  e = e || 32;
+  let t = "abcdefhijkmnprstwxyz2345678", a = t.length, n = "";
+  for (i = 0; i < e; i++)
+    n += t.charAt(Math.floor(Math.random() * a));
+  return n
 }
 
 async function getPostRequest(body) {
@@ -420,7 +385,8 @@ async function getPostRequest(body) {
     'Cookie': $.cookie,
     "Origin": "https://wbbny.m.jd.com",
     "Referer": "https://wbbny.m.jd.com/",
-    'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+    'User-Agent': UA,
+    //'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
   };
   return { method: method, headers: headers, body: body};
 }
@@ -429,7 +395,7 @@ async function getPostBody(type) {
   return new Promise(async resolve => {
     let taskBody = '';
     try {
-      const log = await getBody($)
+      const log = await getBody($);
       if (type === 'help') {
         taskBody = `functionId=olympicgames_assist&body=${JSON.stringify({"inviteId":$.inviteId,"type": "confirm","ss" :log})}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`
       } else if (type === 'olympicgames_collectCurrency') {
@@ -447,59 +413,6 @@ async function getPostBody(type) {
     } finally {
       resolve(taskBody);
     }
-  })
-}
-/**
- * 随机从一数组里面取
- * @param arr
- * @param count
- * @returns {Buffer}
- */
-function getRandomArrayElements(arr, count) {
-  var shuffled = arr.slice(0), i = arr.length, min = i - count, temp, index;
-  while (i-- > min) {
-    index = Math.floor((i + 1) * Math.random());
-    temp = shuffled[index];
-    shuffled[index] = shuffled[i];
-    shuffled[i] = temp;
-  }
-  return shuffled.slice(min);
-}
-function getAuthorShareCode(url = "http://cdn.annnibb.me/eb6fdc36b281b7d5eabf33396c2683a2.json") {
-  return new Promise(async resolve => {
-    const options = {
-      "url": `${url}?${new Date()}`,
-      "timeout": 10000,
-      "headers": {
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
-      }
-    };
-    if ($.isNode() && process.env.TG_PROXY_HOST && process.env.TG_PROXY_PORT) {
-      const tunnel = require("tunnel");
-      const agent = {
-        https: tunnel.httpsOverHttp({
-          proxy: {
-            host: process.env.TG_PROXY_HOST,
-            port: process.env.TG_PROXY_PORT * 1
-          }
-        })
-      }
-      Object.assign(options, { agent })
-    }
-    $.get(options, async (err, resp, data) => {
-      try {
-        if (err) {
-        } else {
-          if (data) data = JSON.parse(data)
-        }
-      } catch (e) {
-        // $.logErr(e, resp)
-      } finally {
-        resolve(data || []);
-      }
-    })
-    await $.wait(10000)
-    resolve();
   })
 }
 
