@@ -17,7 +17,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
-let redEnvelopeId = 'f8ff6ccfccd7484e800183e6aa494e4a71381626400713057';
+let redEnvelopeId = '118269d65ece47e2b85f531a0caa2b2898771626537646753';
 let inviter = 'Qj6RsLO0usmNZdCg4ojkk1HB2mZJTrMXJKL5Ez8L_S8';
 
 if (process.env.redEnvelopeId) {
