@@ -9,8 +9,8 @@ export joyinviterPin="" //IANWqUmbgQVF9ePHGsGFA2m-zSTLKmHFbE-IW-Waarw
 微信公众号:余周校园
 // [task_local]
  //#柠檬旺财乐园
-
- cron "*/5 * * * *" 
+[Script]
+ cron "*/5 * * * *" script-path=jd_joy-park.js,tag=柠檬旺财乐园新手上路版
 
 const $ = new Env('柠檬旺财乐园新手上路版');
 const notify = $.isNode() ? require('./sendNotify') : '';
