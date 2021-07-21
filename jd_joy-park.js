@@ -6,13 +6,11 @@
 export joyinviterPin="" //IANWqUmbgQVF9ePHGsGFA2m-zSTLKmHFbE-IW-Waarw
 
 ====================
-新手上路勿黑勿喷
-TG通知群 https://t.me/ningmeng999
-微信公众号:柠檬玩机交流
-*/
+微信公众号:余周校园
 // [task_local]
-// #柠檬旺财乐园
-// */5 * * * * 
+ //#柠檬旺财乐园
+
+ cron "*/5 * * * *" 
 
 const $ = new Env('柠檬旺财乐园新手上路版');
 const notify = $.isNode() ? require('./sendNotify') : '';
