@@ -1,3 +1,4 @@
+##自己加变量
 import requests
 
 import random
@@ -5,7 +6,7 @@ import random
 number2 = random.randint(50001,65000)
 
 dict = {
-        '17681854312':'123456qq'
+        '账号':'密码'
         }
 
 header={
