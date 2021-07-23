@@ -27,3 +27,4 @@ www.00nb.xyz:5701
                                                                   维护不易，支持的铁子赏个水钱也是莫大的支持！！！
  ![54__6fec1201ee853353e7399ac5d2597c9d_90dd81835322631168c8bc8fb7111707](https://user-images.githubusercontent.com/83000809/126744495-21a4d77f-8a0d-4483-96a4-100c9dccdae2.png)
 
+关于互助码的事项，这里统一说下
