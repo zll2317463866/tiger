@@ -1,7 +1,7 @@
 /*
 真·抢京豆
 
-export angryBeanPins="1@2"  pt_pin或用户名的值
+//export angryBeanPins="1@2"  pt_pin或用户名的值
 
 更新时间：2021-7-23
 备注：高速并发抢京豆，专治偷助力。设置环境变量angryBeanPins为指定账号助力，默认不助力。环境变量angryBeanMode可选值priority和speed，默认speed模式。
