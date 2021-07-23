@@ -1,17 +1,15 @@
 /* 
 cron 14 10 * * * https://raw.githubusercontent.com/smiek2221/scripts/master/jd_sign_graphics.js
 只支持nodejs环境
-需要安装依赖 
+需要安装依赖
 npm i png-js 或者 npm i png-js -S
-
 如果 read ECONNRESET 错误 可以试试
 环境变量 JOY_HOST
 修改域名 https://jdjoy.jd.com 可以改成ip https://49.7.27.236
 */
 
-const validator = require('./JDJRValidator_Pure.js');
-const Faker=require('./sign_graphics_validate.js') 
-
+const validator = require('./JDWXX_JD_jd_JRValidator_Pure.js');
+const Faker=require('./JDWXX_JD_jd_sign_validate.js')
 const $ = new Env('京东签到图形验证');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -47,8 +45,9 @@ const turnTableId = [
   { "name": "京东商城-数码", "id": 347, "url": "https://prodev.m.jd.com/mall/active/4SWjnZSCTHPYjE5T7j35rxxuMTb6/index.html" },
   { "name": "京东超市", "id": 1204, "url": "https://pro.m.jd.com/mall/active/QPwDgLSops2bcsYqQ57hENGrjgj/index.html" },
 ]
-$.get = validator.injectToRequest($.get.bind($), 'channelSign')
-$.post = validator.injectToRequest($.post.bind($), 'channelSign')
+$.UA = $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1")
+$.get = validator.injectToRequest($.get.bind($), 'channelSign', $.UA)
+$.post = validator.injectToRequest($.post.bind($), 'channelSign', $.UA)
 
 !(async () => {
   if (!cookiesArr[0]) {
@@ -89,7 +88,6 @@ async function showMsg() {
   if ($.isNode() && message) await notify.sendNotify(`${$.name}`, `【签到数量】:  ${turnTableId.length}个\n` + subTitle + message);
 }
 async function signRun() {
-  UA = $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1")
   for (let i in turnTableId) {
     signFlag = false
     await Login(i)
@@ -201,7 +199,7 @@ function getEid(arr) {
       body: `d=${arr.d}`,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent": UA
+        "User-Agent": $.UA
       }
     }
     $.post(options, async (err, resp, data) => {
@@ -240,7 +238,7 @@ function taskUrl(turnTableId) {
       'Host': `jdjoy.jd.com`,
       "Origin": "https://prodev.m.jd.com",
       "Referer": "https://prodev.m.jd.com/",
-      "User-Agent": UA,
+      "User-Agent": $.UA,
     }
   }
 }
@@ -259,7 +257,19 @@ function tasPostkUrl(turnTableId) {
       'Host': `jdjoy.jd.com`,
       "Origin": "https://prodev.m.jd.com",
       "Referer": "https://prodev.m.jd.com/",
-      "User-Agent": UA,
+      "User-Agent": $.UA,
+    }
+  }
+}
+
+function jsonParse(str) {
+  if (typeof str == "string") {
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      console.log(e);
+      $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
+      return [];
     }
   }
 }
