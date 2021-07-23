@@ -319,10 +319,10 @@ class JDJRValidator {
           if (res.headers['content-encoding'] === 'gzip') {
             const unzipStream = new stream.PassThrough();
             stream.pipeline(
-              response,
-              zlib.createGunzip(),
-              unzipStream,
-              reject,
+                response,
+                zlib.createGunzip(),
+                unzipStream,
+                reject,
             );
             res = unzipStream;
           }
@@ -358,9 +358,9 @@ class JDJRValidator {
 function getCoordinate(c) {
   function string10to64(d) {
     var c = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-~".split("")
-      , b = c.length
-      , e = +d
-      , a = [];
+        , b = c.length
+        , e = +d
+        , a = [];
     do {
       mod = e % b;
       e = (e - mod) / b;
@@ -545,7 +545,7 @@ $.post = injectToRequest($.post.bind($))
       $.isLogin = true;
       $.nickName = '';
       await TotalBean();
-      if (!require('./JS1_USER_AGENTS').HelloWorld) {
+      if (!require('./JS_USER_AGENTS')) {
         console.log(`\n【京东账号${$.index}】${$.nickName || $.UserName}：运行环境检测失败\n`);
         continue
       }
@@ -629,7 +629,7 @@ $.post = injectToRequest($.post.bind($))
 function getFollowChannels() {
   return new Promise(resolve => {
     $.get({
-      url: `https://jdjoy.jd.com/common/pet/getFollowChannels?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
+      url: `https://jdjoy.jd.com/common/pet/getFollowChannels?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
       headers: {
         'Host': 'api.m.jd.com',
         'accept': '*/*',
@@ -648,7 +648,7 @@ function getFollowChannels() {
 function taskList() {
   return new Promise(resolve => {
     $.get({
-      url: `https://jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
+      url: `https://jdjoy.jd.com/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
       headers: {
         'Host': 'jdjoy.jd.com',
         'accept': '*/*',
@@ -677,7 +677,7 @@ function taskList() {
 function beforeTask(fn, shopId) {
   return new Promise(resolve => {
     $.get({
-      url: `https://jdjoy.jd.com/common/pet/icon/click?iconCode=${fn}&linkAddr=${shopId}&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
+      url: `https://jdjoy.jd.com/common/pet/icon/click?iconCode=${fn}&linkAddr=${shopId}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
       headers: {
         'Accept': '*/*',
         'Connection': 'keep-alive',
@@ -699,7 +699,7 @@ function beforeTask(fn, shopId) {
 function followShop(shopId) {
   return new Promise(resolve => {
     $.post({
-      url: `https://jdjoy.jd.com/common/pet/followShop?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
+      url: `https://jdjoy.jd.com/common/pet/followShop?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
       headers: {
         'User-Agent': 'jdapp;iPhone;10.0.6;12.4.1;fc13275e23b2613e6aae772533ca6f349d2e0a86;network/wifi;ADID/C51FD279-5C69-4F94-B1C5-890BC8EB501F;model/iPhone11,6;addressid/589374288;appBuild/167724;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
         'Accept-Language': 'zh-cn',
@@ -722,7 +722,7 @@ function followShop(shopId) {
 function doTask(body, fnId = 'scan') {
   return new Promise(resolve => {
     $.post({
-      url: `https://jdjoy.jd.com/common/pet/${fnId}?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
+      url: `https://jdjoy.jd.com/common/pet/${fnId}?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
       headers: {
         'Host': 'jdjoy.jd.com',
         'accept': '*/*',
@@ -755,7 +755,7 @@ function feed() {
   feedNum = process.env.feedNum ? process.env.feedNum : 80
   return new Promise(resolve => {
     $.post({
-      url: `https://jdjoy.jd.com/common/pet/enterRoom/h5?invitePin=&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
+      url: `https://jdjoy.jd.com/common/pet/enterRoom/h5?invitePin=&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
       headers: {
         'Host': 'jdjoy.jd.com',
         'accept': '*/*',
@@ -776,7 +776,7 @@ function feed() {
       } else {
         console.log('开始喂食......')
         $.get({
-          url: `https://jdjoy.jd.com/common/pet/feed?feedCount=${feedNum}&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
+          url: `https://jdjoy.jd.com/common/pet/feed?feedCount=${feedNum}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
           headers: {
             'Host': 'jdjoy.jd.com',
             'accept': '*/*',
@@ -806,7 +806,7 @@ function feed() {
 function award(taskType) {
   return new Promise(resolve => {
     $.get({
-      url: `https://jdjoy.jd.com/common/pet/getFood?reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE&taskType=${taskType}`,
+      url: `https://jdjoy.jd.com/common/pet/getFood?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F&taskType=${taskType}`,
       headers: {
         'Host': 'jdjoy.jd.com',
         'accept': '*/*',
@@ -836,7 +836,7 @@ function run(fn = 'match') {
   let level = process.env.JD_JOY_teamLevel ? process.env.JD_JOY_teamLevel : 2
   return new Promise(resolve => {
     $.get({
-      url: `https://jdjoy.jd.com/common/pet/combat/${fn}?teamLevel=${level}&reqSource=h5&invokeKey=NRp8OPxZMFXmGkaE`,
+      url: `https://jdjoy.jd.com/common/pet/combat/${fn}?teamLevel=${level}&reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
       headers: {
         'Host': 'jdjoy.jd.com',
         'sec-fetch-mode': 'cors',
@@ -971,7 +971,6 @@ function writeFile(text) {
 
 // prettier-ignore
 function Env(t, e) {
-  "undefined" != typeof process && JSON.stringify(process.env).indexOf("GITHUB") > -1 && process.exit(0);
 
   class s {
     constructor(t) {
@@ -1078,7 +1077,7 @@ function Env(t, e) {
       {
         this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path");
         const t = this.path.resolve(this.dataFile), e = this.path.resolve(process.cwd(), this.dataFile),
-          s = this.fs.existsSync(t), i = !s && this.fs.existsSync(e);
+            s = this.fs.existsSync(t), i = !s && this.fs.existsSync(e);
         if (!s && !i) return {};
         {
           const i = s ? t : e;
@@ -1095,7 +1094,7 @@ function Env(t, e) {
       if (this.isNode()) {
         this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path");
         const t = this.path.resolve(this.dataFile), e = this.path.resolve(process.cwd(), this.dataFile),
-          s = this.fs.existsSync(t), i = !s && this.fs.existsSync(e), r = JSON.stringify(this.data);
+            s = this.fs.existsSync(t), i = !s && this.fs.existsSync(e), r = JSON.stringify(this.data);
         s ? this.fs.writeFileSync(t, r) : i ? this.fs.writeFileSync(e, r) : this.fs.writeFileSync(t, r)
       }
     }
