@@ -25,7 +25,7 @@ if ($.isNode() && process.env.summer_movement_ShHelpFlag) {
 }
 
 // 邀请助力
-let summer_movement_HelpHelpHelpFlag = true;// 是否只执行邀请助力  true 是，false 不是
+let summer_movement_HelpHelpHelpFlag = false;// 是否只执行邀请助力  true 是，false 不是
 if ($.isNode() && process.env.summer_movement_HelpHelpHelpFlag) {
   summer_movement_HelpHelpHelpFlag = process.env.summer_movement_HelpHelpHelpFlag;
 }
@@ -38,11 +38,7 @@ $.cookie = '';
 $.inviteList = [];
 $.secretpInfo = {};
 $.ShInviteList = [];
-$.innerShInviteList = [
-  '',
-  
-  
-];
+$.innerShInviteList = [];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -53,8 +49,8 @@ if ($.isNode()) {
 }
 
 $.appid = 'o2_act';
-const UA = `jdapp;android;10.0.2;9;${randomString(28)}-73D2164353034363465693662666;network/wifi;model/MI 8;addressid/138087843;aid/0a4fc8ec9548a7f9;oaid/3ac46dd4d42fa41c;osVer/28;appBuild/88569;partner/jingdong;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 9; MI 8 Build/PKQ1.180729.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045715 Mobile Safari/537.36;`
-const UUID = UA.split(';') && UA.split(';')[4] || ''
+let UA = `jdapp;android;10.0.2;9;${randomString(28)}-73D2164353034363465693662666;network/wifi;model/MI 8;addressid/138087843;aid/0a4fc8ec9548a7f9;oaid/3ac46dd4d42fa41c;osVer/28;appBuild/88569;partner/jingdong;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 9; MI 8 Build/PKQ1.180729.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045715 Mobile Safari/537.36;`
+let UUID = UA.split(';') && UA.split(';')[4] || ''
 function randomString(e) {
   e = e || 32;
   let t = "1234567890",
@@ -94,7 +90,7 @@ function randomString(e) {
 
   console.log('\n\n该脚本启用了[正道的光]模式\n执行 做任务、做店铺任务 会有几率不执行\n本脚本不让任务一次全部做完\n您可以多跑几次\n北京时间18时后是正常模式\n\n🐸\n')
 
-
+      
   console.log(`注意：若执行失败，则请手动删除脚本目录下的“app.*.js”文件，然后重新执行脚本`);
   console.log(`类似 app.5c2472d1.js、app.c7364f20.js 等都删除\n不用每次删 执行失败再删`);
   for (let i = 0; i < cookiesArr.length; i++) {
@@ -105,6 +101,8 @@ function randomString(e) {
       $.isLogin = true;
       $.nickName = $.UserName;
       $.hotFlag = false; //是否火爆
+      UA = `jdapp;android;10.0.2;9;${randomString(28)}-73D2164353034363465693662666;network/wifi;model/MI 8;addressid/138087843;aid/0a4fc8ec9548a7f9;oaid/3ac46dd4d42fa41c;osVer/28;appBuild/88569;partner/jingdong;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 9; MI 8 Build/PKQ1.180729.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045715 Mobile Safari/537.36;`
+      UUID = UA.split(';') && UA.split(';')[4] || ''
       $.joyytoken = ''
       joyytoken_count = 1
       console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
@@ -135,7 +133,7 @@ function randomString(e) {
       await $.wait(2000);
     }
   }
-
+  
 
 })()
   .catch((e) => {
@@ -214,7 +212,7 @@ async function movement() {
         }
       }
     }
-
+    
     console.log(`\n做任务\n`);
     if(!$.hotFlag) await takePostRequest('olympicgames_getTaskDetail');
     if(`${summer_movement_HelpHelpHelpFlag}` === "true") return
@@ -269,6 +267,7 @@ async function movement() {
             console.log(`任务失败`);
             await $.wait(getRndInteger(2000, 3000));
           }
+          if($.hotFlag) break
         }
       } else if ($.oneTask.taskType === 2 && $.oneTask.status === 1 && $.oneTask.scoreRuleVos[0].scoreRuleType === 2){
         console.log(`做任务：${$.oneTask.taskName};等待完成 (实际不会添加到购物车)`);
@@ -286,6 +285,7 @@ async function movement() {
           await takePostRequest('add_car');
           await $.wait(getRndInteger(1000, 2000));
           needTime --;
+          if($.hotFlag) break
         }
       }else if ($.oneTask.taskType === 2 && $.oneTask.status === 1 && $.oneTask.scoreRuleVos[0].scoreRuleType === 0){
         $.activityInfoList = $.oneTask.productInfoVos ;
@@ -305,10 +305,12 @@ async function movement() {
             console.log(`任务失败`);
             await $.wait(getRndInteger(2000, 3000));
           }
+          if($.hotFlag) break
         }
       }
+      if($.hotFlag) break
     }
-
+    
     //==================================微信任务========================================================================
     $.wxTaskList = [];
     if(!$.hotFlag) await takePostRequest('wxTaskDetail');
@@ -332,7 +334,9 @@ async function movement() {
           await $.wait(getRndInteger(1000, 2000));
           console.log(`任务完成`);
         }
+        if($.hotFlag) break
       }
+      if($.hotFlag) break
     }
 
     // 店铺
@@ -376,7 +380,9 @@ async function movement() {
             await $.wait(getRndInteger(2000, 3000));
             console.log(`任务完成`);
           }
+          if($.hotFlag) break
         }
+        if($.hotFlag) break
       }
       if(taskbool) await $.wait(1000);
       let boxLotteryNum = $.shopResult.boxLotteryNum;
@@ -385,6 +391,7 @@ async function movement() {
         //抽奖
         await takePostRequest('olympicgames_boxShopLottery');
         await $.wait(3000);
+        if($.hotFlag) break
       }
       // let wishLotteryNum = $.shopResult.wishLotteryNum;
       // for (let j = 0; j < wishLotteryNum; j++) {
@@ -394,7 +401,9 @@ async function movement() {
       //   await $.wait(3000);
       // }
       if(taskbool) await $.wait(3000);
+      if($.hotFlag) break
     }
+    $.wait(2000);
 
   } catch (e) {
     $.logErr(e)
@@ -580,6 +589,9 @@ async function dealReturn(type, res) {
         }
         $.taskList = data.data.result && data.data.result.taskVos || [];
       } else if (data.data && data.data.bizMsg) {
+        if(data.data.bizMsg.indexOf('活动太火爆') > -1){
+          $.hotFlag = true;
+        }
         console.log(data.data.bizMsg);
       } else {
         console.log(res);
@@ -593,6 +605,9 @@ async function dealReturn(type, res) {
           console.log(data.data.result.successToast);
         }
       } else if (data.data && data.data.bizMsg) {
+        if(data.data.bizMsg.indexOf('活动太火爆') > -1){
+          $.hotFlag = true;
+        }
         console.log(data.data.bizMsg);
       } else {
         console.log(res);
@@ -601,6 +616,11 @@ async function dealReturn(type, res) {
     case 'olympicgames_getFeedDetail':
       if (data.code === 0) {
         $.feedDetailInfo = data.data.result.addProductVos[0] || [];
+      }else if(data.data && data.data.bizMsg){
+        console.log(data.data.bizMsg);
+        if(data.data.bizMsg.indexOf('活动太火爆') > -1){
+          $.hotFlag = true;
+        }
       }
       break;
     case 'add_car':
@@ -641,6 +661,8 @@ async function dealReturn(type, res) {
       } else if (data.data && data.data.bizMsg) {
         if (data.data.bizMsg.indexOf('不在运动中') > -1) {
           $.speedTraining = false;
+        }else if(data.data.bizMsg.indexOf('活动太火爆') > -1){
+          $.hotFlag = true;
         }
         console.log(data.data.bizMsg);
       } else {
@@ -654,6 +676,8 @@ async function dealReturn(type, res) {
       } else if (data.data && data.data.bizMsg) {
         if (data.data.bizMsg.indexOf('运动量已经够啦') > -1) {
           $.speedTraining = false;
+        }else if(data.data.bizMsg.indexOf('活动太火爆') > -1){
+          $.hotFlag = true;
         }
         console.log(data.data.bizMsg);
       } else {
@@ -666,6 +690,11 @@ async function dealReturn(type, res) {
     case 'olympicgames_shopLotteryInfo':
       if (data.code === 0) {
         $.shopResult = data.data.result;
+      }else if(data.data && data.data.bizMsg){
+        console.log(data.data.bizMsg);
+        if(data.data.bizMsg.indexOf('活动太火爆') > -1){
+          $.hotFlag = true;
+        }
       }
       break;
     case 'qryCompositeMaterials':
@@ -680,6 +709,9 @@ async function dealReturn(type, res) {
         console.log(`签到获得：${data.data.result.score}`);
       }else if(data.data && data.data.bizMsg){
         console.log(data.data.bizMsg);
+        if(data.data.bizMsg.indexOf('活动太火爆') > -1){
+          $.hotFlag = true;
+        }
       }else{
         console.log(data);
       }
@@ -704,6 +736,9 @@ async function dealReturn(type, res) {
         }
       } else if (data.data && data.data.bizMsg) {
         console.log(data.data.bizMsg);
+        if(data.data.bizMsg.indexOf('活动太火爆') > -1){
+          $.hotFlag = true;
+        }
       } else {
         console.log(res);
       }
