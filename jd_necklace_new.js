@@ -4,7 +4,7 @@
 
  */
 const $ = new Env('点点券二代目');
-const ZooFaker=require('./zll2317463866_tiger_ZooFaker_Necklace.js') 
+const ZooFaker=require('./ZooFaker_Necklace.js') 
 let allMessage = ``;
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
