@@ -1,4 +1,10 @@
-##自己加变量
+#/*
+# 小米运动更新步数
+#[task_local]
+# 小米运动更新步数
+#0 15 15 * *
+#*/
+
 import requests
 
 import random
@@ -6,7 +12,8 @@ import random
 number2 = random.randint(50001,65000)
 
 dict = {
-        '账号':'密码'
+# '小米运行账号':'密码'
+        '':''
         }
 
 header={
