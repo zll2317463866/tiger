@@ -9,7 +9,7 @@ import requests
 
 import random
 
-number2 = random.randint(50001,65000)
+number2 = random.randint(60000,95000)
 
 dict = {
 # '小米运行账号':'密码'
