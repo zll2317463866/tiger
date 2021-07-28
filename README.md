@@ -40,3 +40,10 @@ http://193.112.242.211/XnlBVg/u1vws4
 https://blog.csdn.net/z_1231/article/details/118695453
 
 注意2.8的教程方法只是让它回到2.2的使用方法，其余都一致！
+
+更多教程请关注公众号
+
+↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+![qrcode_for_gh_048a498b68f1_258](https://user-images.githubusercontent.com/83000809/127257735-e6032090-d04c-413d-8094-22ab36b3caa1.jpg)
+
