@@ -1,7 +1,7 @@
 /*
 京喜领88元红包
 活动入口：京喜app-》我的-》京喜领88元红包
-助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者
+助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力tiger库作者
 温馨提示：如提示助力火爆，可尝试寻找京东客服
 脚本兼容: Quantumult X, Surge, Loon, JSBox, Node.js
 ==============Quantumult X==============
@@ -46,7 +46,7 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
   }
   console.log('京喜领88元红包\n' +
       '活动入口：京喜app-》我的-》京喜领88元红包\n' +
-      '助力逻辑：脚本会助力作者，介意请取消脚本')
+      '助力逻辑：脚本会助力tiger库作者，介意请取消脚本')
   let res = await getAuthorShareCode() || [];
   let res2 = await getAuthorShareCode('https://github.com/zll2317463866/tiger/tree/main/json') || ["RQ_M52yh3gO4liUU25pbC2dMOTScJMIcUURist1cHEqdKC3r3Bs0AlNzWC3BQYUi","RQ_M52yh3gO4liUU25pbC6ZSF4kteUmbm1cX9uNZnVfN7vQtmNWIOG5dnzu9WzTn","RQ_M52yh3gO4liUU25pbC8fCGTCS3Y6X7NF5DlX2safPRjXJXmhbaix6VYt3Yywf"];
   if (res && res.activeId) $.activeId = res.activeId;
@@ -76,7 +76,7 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3'
        await $.wait(2500);
      }
     if ($.canHelp) {
-      console.log(`\n【${$.UserName}】有剩余助力机会，开始助力作者\n`)
+      console.log(`\n【${$.UserName}】有剩余助力机会，开始助力tiger库作者\n`)
       for (let item of $.authorMyShareIds) {
         if (!item) continue;
         if (!$.canHelp) break
