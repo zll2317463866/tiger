@@ -6,7 +6,16 @@
 TG学习交流群：https://t.me/cdles
 0 0 * * * https://raw.githubusercontent.com/cdle/jd_study/main/jd_angryKoi.js
 */
-const $ = Env("愤怒的锦鲤")
+/*
+愤怒的锦鲤
+更新时间:2021-05-08
+活动入口：
+只支持Node.js支持N个京东账号
+脚本兼容: Node.js
+cron 1 7,12,19 * * * jd_beauty.js
+ */
+const $ = new Env('愤怒的锦鲤');
+
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 const ua = `jdltapp;iPhone;3.1.0;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Math.random()*4)};${randomString(40)}`
 var kois = process.env.kois ?? ""
