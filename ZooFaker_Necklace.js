@@ -747,37 +747,6 @@ let utils = {
         };
         return r;
     },
-    gettoken: function (UA) {
-        const https = require('https');
-        var body = `content={"appname":"50082","whwswswws":"","jdkey":"","body":{"platform":"1"}}`;
-        return new Promise((resolve, reject) => {
-            let options = {
-                hostname: "bh.m.jd.com",
-                port: 443,
-                path: "/gettoken",
-                method: "POST",
-                rejectUnauthorized: false,
-                headers: {
-                    "Content-Type": "text/plain;charset=UTF-8",
-                    "Host": "bh.m.jd.com",
-                    "Origin": "https://h5.m.jd.com",
-                    "X-Requested-With": "com.jingdong.app.mall",
-                    "Referer": "https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html",
-                    "User-Agent": UA,
-                }
-            }
-            const req = https.request(options, (res) => {
-                res.setEncoding('utf-8');
-                let rawData = '';
-                res.on('error', reject);
-                res.on('data', chunk => rawData += chunk);
-                res.on('end', () => resolve(rawData));
-            });
-            req.write(body);
-            req.on('error', reject);
-            req.end();
-        });
-    },
     get_blog: function (pin) {
         let encrypefun = {
             "z": function (p1, p2) {
@@ -835,79 +804,72 @@ let utils = {
         //"1627139784174~1jNN40H0elF14e91ebb633928c23d5afbaa8f947952~x~~~B~TBJHGg0bVAlaF1oPTVwfXQtaVBdJFQcVChcaGxtURA0bVkQUF0cXXhUDG1AZXhUcF0wVAxVSBg4DREU=~0v3u0bq",
         return `${timestamp}~1${nonce_str+token}~${encrypeid}~~~${isDefaultKey}~${cipher}~${this.getCrcCode(cipher)}`;
     },
-    get_risk_result: async function ($) {
+    getBody: async function ($ = {}) {
+        var pin = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
         var appid = "50082";
         var TouchSession = this.getTouchSession();
-        if (!$.joyytoken || $.joyytoken_count > 18) {
-            $.joyytoken = JSON.parse(await this.gettoken($.UA))["joyytoken"];
-            //console.log("第一次请求joyytoken");
-            $.joyytoken_count = 0;
-        }
-        $.joyytoken_count++;
         let riskData;
         switch ($.action) {
-            case 'startTask':
-                riskData = {
-                    taskId: $.id
-                };
-                break;
-            case 'chargeScores':
-                riskData = {
-                    bubleId: $.id
-                };
-                break;
-            case 'sign':
-                riskData = {};
-            default:
-                break;
+          case 'startTask':
+            riskData = { taskId: $.id };
+            break;
+          case 'chargeScores':
+            riskData = { bubleId: $.id };
+            break;
+          case 'sign':
+            riskData = {};
+            break;
+          case 'exchangeGift':
+            riskData = { scoreNums: $.id, giftConfigId: $.giftConfigId || 198 };
+            break;
+          default:
+            break;
         }
 
         var random = Math.floor(1e+6 * Math.random()).toString().padEnd(6, '8');
         var senddata = this.objToString2(this.RecursiveSorting({
-            pin: $.UserName,
+            pin,
             random,
             ...riskData
         }));
         var time = this.getCurrentTime();
         // time = 1626970587918;
-        var encrypt_id = this.decipherJoyToken(appid + $.joyytoken, appid)["encrypt_id"].split(",");
+        var encrypt_id = this.decipherJoyToken(appid + $.joyToken, appid)["encrypt_id"].split(",");
         var nonce_str = this.getRandomWord(10);
         // nonce_str="iY8uFBbYX7";
         var key = this.getKey(encrypt_id[2], nonce_str, time.toString());
 
-        var str1 = `${senddata}&token=${$.joyytoken}&time=${time}&nonce_str=${nonce_str}&key=${key}&is_trust=1`;
+        var str1 = `${senddata}&token=${$.joyToken}&time=${time}&nonce_str=${nonce_str}&key=${key}&is_trust=1`;
         //console.log(str1);
         str1 = this.sha1(str1);
-        var outstr = [time, "1" + nonce_str + $.joyytoken, encrypt_id[2] + "," + encrypt_id[3]];
+        var outstr = [time, "1" + nonce_str + $.joyToken, encrypt_id[2] + "," + encrypt_id[3]];
         outstr.push(str1);
         outstr.push(this.getCrcCode(str1));
         outstr.push("C");
-        var data = {}
-        data = {
+        var data = {
             tm: [],
-            tnm: [],
-            grn: $.joyytoken_count,
+            tnm: ["d5-15,C5,5JD,a,t","d7-15,C5,5LJ,a,t"],
+            grn: 1,
             ss: TouchSession,
             wed: 'ttttt',
             wea: 'ffttttua',
-            pdn: [ 7, (Math.floor(Math.random() * 1e8) % 180) + 1, 6, 11, 1, 5 ],
+            pdn: [7, (Math.floor(Math.random() * 1e8) % 180) + 1, 6, 11, 1, 5],
             jj: 1,
             cs: hexMD5("Object.P.<computed>=&HTMLDocument.Ut.<computed>=https://storage.360buyimg.com/babel/00750963/1942873/production/dev/main.e5d1c436.js"),
-            // cs:"4d8853ea4e4f10d8bde7071dd7fb0ed4",
             np: 'iPhone',
             t: time,
-            jk: `${$.UUID}`,
+            jk: $.uuid,
             fpb: '',
             nv: 'Apple Computer, Inc.',
             nav: '167741',
-            scr: [ 896, 414 ],
+            scr: [736, 414],
             ro: [
-              'iPhone12,1',
+              'iPhone10,2',
               'iOS',
-              '14.3',
+              '14.4.2',
               '10.0.8',
               '167741',
-              `${$.UUID}`,
+              $.uuid,
               'a'
             ],
             ioa: 'fffffftt',
@@ -916,7 +878,7 @@ let utils = {
             cf_v: '01',
             bd: senddata,
             mj: [1, 0, 0],
-            blog: "a",
+            blog: 'a',
             msg: ''
         }
         // console.log(data);
@@ -937,5 +899,5 @@ let utils = {
     }
 };
 module.exports = {
-    utils
+  utils
 }
