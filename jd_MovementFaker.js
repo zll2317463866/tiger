@@ -3,6 +3,7 @@ const fs = require('fs/promises');
 const { R_OK } = require('fs').constants;
 const vm = require('vm');
 
+
 const URL = 'https://wbbny.m.jd.com/babelDiy/Zeus/2rtpffK8wqNyPBH6wyUDuBKoAbCt/index.html';
 // const REG_MODULE = /(\d+)\:function\(.*(?=smashUtils\.get_risk_result)/gm;
 const SYNTAX_MODULE = '!function(n){var r={};function o(e){if(r[e])';
