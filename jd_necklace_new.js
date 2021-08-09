@@ -40,7 +40,9 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  // console.log(`\n通知：京东已在领取任务、签到、领取点点券三个添加了log做了校验，暂时无可解决\n`);
+  // console.log(`\n通知：[非法请求] 可以等5分钟左右再次执行脚本\n`);
+  console.log(`\n脚本失效 [非法请求]\n`);
+  return
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -125,10 +127,10 @@ async function receiveBubbles() {
   }
 }
 async function sign() {
-  if ($.signInfo.todayCurrentSceneSignStatus === 1) {
+  if ($.signInfo && $.signInfo.todayCurrentSceneSignStatus === 1) {
     console.log(`\n开始每日签到`)
     await necklace_sign();
-  } else {
+  } else if($.signInfo) {
     console.log(`当前${new Date(new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000).toLocaleString()}已签到`)
   }
 }
@@ -479,6 +481,7 @@ function taskPostUrl(function_id, body = {}) {
     }
   }
 }
+
 function safeGet(data) {
   try {
     if (typeof JSON.parse(data) == "object") {
@@ -503,13 +506,15 @@ function jsonParse(str) {
 }
 
 function getUA(){
-  $.UA = `jdapp;iPhone;10.0.8;14.3;${randomString(40)};network/wifi;model/iPhone12,1;addressid/4199175193;appBuild/167741;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1`
+  $.UA = `jdapp;iPhone;10.0.10;14.3;${randomString(40)};network/wifi;model/iPhone12,1;addressid/4199175193;appBuild/167764;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1`
   $.UUID = $.UA.split(';') && $.UA.split(';')[4] || ''
+  $.appBuild = $.UA.match(/appBuild\/(\d+);/) && $.UA.match(/appBuild\/(\d+);/)[1] || ''
+  $.model = $.UA.match(/model\/([^;.]+)/) && $.UA.match(/model\/([^;.]+)/)[1] || ''
   $.joyytoken = ''
 }
 function randomString(e) {
   e = e || 32;
-  let t = "abcdefhijkmnprstwxyz2345678", a = t.length, n = "";
+  let t = "abcdef0123456789", a = t.length, n = "";
   for (i = 0; i < e; i++)
     n += t.charAt(Math.floor(Math.random() * a));
   return n
