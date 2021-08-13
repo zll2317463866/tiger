@@ -1,7 +1,7 @@
 /**
  *  活动路径  手机馆---》IQOO大牌日---〉左下角金机馆
 cron 33 4,7 8-20 8 * https://raw.githubusercontent.com/star261/jd/main/scripts/jd_golden_machine.js
- *  第一个账号参加作者内置的团，其他账号参加第一个账号的团
+ *  去除后门版本，第一个号不参团，其余ck参加一个号团
  */
 const $ = new Env('金机奖投票');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -32,7 +32,7 @@ let res = [];
         if(!res){res = [];}
     }
     if(res && res.length > 0){
-        $.authorCode = 6115feb2017da60259(res,1)[0];
+        $.authorCode = (res,1)[0];
     }
     for (let i = 0; i < cookiesArr.length; i++) {
         await getUA();
