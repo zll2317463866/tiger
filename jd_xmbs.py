@@ -8,7 +8,7 @@ import random
 
 phone = ''#小米账号
 password = ''#密码
-step = int(random.uniform(80000,95000))
+step = int(random.uniform(30000,35000))
 
 #=============需要修改的参数==========
 
