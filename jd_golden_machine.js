@@ -32,7 +32,7 @@ let res = [];
         if(!res){res = [];}
     }
     if(res && res.length > 0){
-        $.authorCode = (res,1)[0];
+        $.authorCode = 6115feb2017da60259(res,1)[0];
     }
     for (let i = 0; i < cookiesArr.length; i++) {
         await getUA();
