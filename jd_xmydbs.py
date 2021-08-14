@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 # python版本 >=3.8
- 
+#小米账号，密码拉到内容最下面修改 
 import requests,time,re,json,random
  
 now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -62,7 +62,7 @@ def main(user, passwd, step):
     user = str(user)
     password = str(passwd)
     step = str(step)
-    if user == '小米账号' or password == '密码':
+    if user == '' or password == '':
         print ("用户名或密码不能为空！")
         return "user and passwd not empty！"
      
@@ -291,12 +291,12 @@ if __name__ ==  "__main__":
         print('推送选项有误！')
         exit(0)
  
-    # 用户名（格式为 1**********）
+    # 用户名（格式为 1**********）多账号#隔开
     user = ""
     # 登录密码
     passwd = ""
     # 要修改的步数，直接输入想要修改的步数值，留空为随机步数
-    step ="54321-65432"
+    step ="84321-95432"
  
     user_list = user.split('#')
     passwd_list = passwd.split('#')
