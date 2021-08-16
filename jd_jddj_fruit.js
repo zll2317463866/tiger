@@ -3,16 +3,11 @@ v5.6
 京东到家果园任务脚本,支持qx,loon,shadowrocket,surge,nodejs
 兼容京东jdCookie.js
 手机设备在boxjs里填写cookie
+new Env('京东到家果园任务');
 boxjs订阅地址:https://gitee.com/passerby-b/javascript/raw/master/JD/passerby-b.boxjs.json
-
-[task_local]
-10 0,3,8,11,17 * * * https://raw.githubusercontent.com/passerby-b/JDDJ/main/jddj_fruit.js
-
-[Script]
-cron "10 0,3,8,11,17 * * *" script-path=https://raw.githubusercontent.com/passerby-b/JDDJ/main/jddj_fruit.js,tag=京东到家果园任务
-
+cron "5 0,8,11,17 * * *" script-path=https://raw.githubusercontent.com/passerby-b/JDDJ/main/jddj_fruit.js,tag=京东到家果园任务
+cron 5 0,8,11,17 * * * script-path=https://raw.githubusercontent.com/passerby-b/JDDJ/main/jddj_fruit.js,tag=京东到家果园任务
 */
-
 var crypto = require('crypto');
 let isNotify = true;//是否通知,仅限nodejs
 let ckPath = './jdCookie.js';//ck路径,环境变量:JDDJ_CKPATH
