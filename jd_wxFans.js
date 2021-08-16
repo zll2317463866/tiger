@@ -1,16 +1,16 @@
-/*
-* 粉丝互动，没啥水
-* 修改温某的脚本，由于温某不干活，只能自己动手修改了
-* 注意：脚本会加购，脚本会加购，脚本会加购
-* 若发现脚本里没有的粉丝互动活动。欢迎反馈给我
-cron  "34 5,17 * * *" jd_wxFans.js
+/**
+粉丝互动，没啥水
+修改温某的脚本，由于温某不干活，只能自己动手修改了
+注意：脚本会加购，脚本会加购，脚本会加购
+若发现脚本里没有的粉丝互动活动。欢迎反馈给我
+cron 34 6,18 * * * https://raw.githubusercontent.com/star261/jd/main/scripts/jd_fan.js
 * */
 const $ = new Env('粉丝互动');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
 const activityList = [
-     {'actid':'5ae85e34c6054f379b3bdb0867842cd0','endTime':1629302400000},
+    {'actid':'5ae85e34c6054f379b3bdb0867842cd0','endTime':1629302400000},
     {'actid':'4baf19fa3f454e6abf82be7d66605ab4','endTime':1630425599000},
     {'actid':'c75ae2afd7ff4aec9ed47008b08400f7','endTime':1630288800000},
     {'actid':'3da50af9e8664746844c5456b8920b7d','endTime':1630425599000},
@@ -25,6 +25,7 @@ const activityList = [
     {'actid':'49d8035a8f294ac7893e814d2b8e79ed','endTime':1629907199000},
     {'actid':'f22809ea36b14411a625641ef9685e53','endTime':1630339200000},
     {'actid':'9bb5cb2801114f2981c183abbc2aa522','endTime':1630425596000},//需要入会
+    {'actid':'eff9c47393be446f9dd576e26d13dd9d','endTime':1631635200000},
 ];
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
@@ -32,7 +33,10 @@ if ($.isNode()) {
     })
     if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-    cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+    cookiesArr = [
+        $.getdata("CookieJD"),
+        $.getdata("CookieJD2"),
+        ...$.toObj($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 !(async () => {
     if (!cookiesArr[0]) {
