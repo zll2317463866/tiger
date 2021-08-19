@@ -9,7 +9,7 @@ Last Modified time: 2021-05-28 17:27:14
 20 0,20 * * * jd_necklace.js, tag=点点券, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
  */
-const $ = new Env('点点券');
+const $ = new Env('点点券二代目');
 const ZooFaker=require('./zll2317463866_tiger_ZooFaker_Necklace.js').utils;
 let allMessage = ``;
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -40,9 +40,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  // console.log(`\n通知：[非法请求] 可以等5分钟左右再次执行脚本\n`);
-  console.log(`\n脚本失效 [非法请求]\n`);
-  return
+  console.log(`\n通知：[非法请求] 可以等5分钟左右再次执行脚本\n`);
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -506,10 +504,8 @@ function jsonParse(str) {
 }
 
 function getUA(){
-  $.UA = `jdapp;iPhone;10.0.10;14.3;${randomString(40)};network/wifi;model/iPhone12,1;addressid/4199175193;appBuild/167764;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1`
+  $.UA = `jdapp;iPhone;10.0.10;14.3;${randomString(40)};network/wifi;model/iPhone12,1;addressid/4199175193;appBuild/167741;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1`
   $.UUID = $.UA.split(';') && $.UA.split(';')[4] || ''
-  $.appBuild = $.UA.match(/appBuild\/(\d+);/) && $.UA.match(/appBuild\/(\d+);/)[1] || ''
-  $.model = $.UA.match(/model\/([^;.]+)/) && $.UA.match(/model\/([^;.]+)/)[1] || ''
   $.joyytoken = ''
 }
 function randomString(e) {
