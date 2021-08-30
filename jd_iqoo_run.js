@@ -96,7 +96,7 @@ async function main() {
     console.log(`获取活动详情成功`);
     $.uid = $.activityData.uid;
     console.log(`助力码：`+$.uid);
-    if($.shareUuid !== ''){
+    if($.shareUuid !== '' && $.activityData.openCardStatus === 0){
         //await takePostRequest('myfriends');
         //await $.wait(2000);
         console.log(`执行助力`);
