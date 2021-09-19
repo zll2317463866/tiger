@@ -6,14 +6,14 @@
 ============Quantumultx===============
 [task_local]
 #送豆得豆
-45 1,12 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_sendBeans.js, tag=送豆得豆, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+5 0,12 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_sendBeans.js, tag=送豆得豆, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 ================Loon==============
 [Script]
-cron "45 1,12 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_sendBeans.js,tag=送豆得豆
+cron "5 0,12 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_sendBeans.js,tag=送豆得豆
 ===============Surge=================
-送豆得豆 = type=cron,cronexp="45 1,12 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_sendBeans.js
+送豆得豆 = type=cron,cronexp="5 0,12 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_sendBeans.js
 ============小火箭=========
-送豆得豆 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_sendBeans.js, cronexpr="45 1,12 * * *", timeout=3600, enable=true
+送豆得豆 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_sendBeans.js, cronexpr="5 0,12 * * *", timeout=3600, enable=true
  */
 const $ = new Env('送豆得豆');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -85,35 +85,6 @@ if ($.isNode()) {
     }
     await helpMain();
   }
-  await getAuthorShareCode()
-  if ($.authorCode && $.authorCode.length) {
-    console.log(`\n开始帮【zero205】助力，感谢！\n`);
-    for (let i = 0; i < cookiesArr.length && i < $.authorCode.length; i++) {
-      cookie = cookiesArr[i];
-      $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1])
-      $.index = i + 1;
-      $.isLogin = true;
-      $.canHelp = true;
-      $.oneTuanInfo = $.authorCode[i];
-      if ($.oneTuanInfo['completed']) {
-        continue;
-      }
-      console.log(`${$.UserName}去助力${$.oneTuanInfo['user']}`);
-      $.detail = {};
-      $.rewardRecordId = '';
-      await getActivityDetail();
-      if (JSON.stringify($.detail) === '{}') {
-        console.log(`获取活动详情失败`);
-        return;
-      } else {
-        $.rewardRecordId = $.detail.rewardRecordId;
-        console.log(`获取活动详情成功`);
-      }
-      await $.wait(3000);
-      await help();
-      await $.wait(2000);
-    }
-  }
   console.log(`\n开始领取奖励\n`);
   for (let i = 0; i < cookiesArr.length && i < openCount; i++) {
     $.cookie = cookiesArr[i];
@@ -136,31 +107,6 @@ if ($.isNode()) {
     await myReward()
   }
 })().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();});
-
-async function getAuthorShareCode() {
-    return new Promise(resolve => {
-        $.get({
-            url: "https://raw.fastgit.org/zero205/updateTeam/main/shareCodes/sd.json",
-            headers: {
-                "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
-            }
-        }, async (err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`);
-                    console.log(`${$.name} API请求失败，请检查网路重试`);
-                } else {
-                    $.authorCode = JSON.parse(data)
-                    $.authorCode = $.authorCode.sort(() => 0.5 - Math.random())
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve();
-            }
-        })
-    })
-}
 
 async function getActivityInfo(){
   $.activityList = [];
@@ -191,9 +137,9 @@ async function getActivityInfo(){
 async function myReward(){
   return new Promise(async (resolve) => {
     let lkt = new Date().getTime()
-    let lks = $.md5('' + 'RtKLB8euDo7KwsO0' + lkt).toString()
+    let lks = $.md5('' + 'JL1VTNRadM68cIMQ' + lkt).toString()
     let options = {
-      "url": `https://sendbeans.jd.com/common/api/bean/activity/myReward?itemsPerPage=10&currentPage=1&sendType=0&invokeKey=RtKLB8euDo7KwsO0`,
+      "url": `https://sendbeans.jd.com/common/api/bean/activity/myReward?itemsPerPage=10&currentPage=1&sendType=0&invokeKey=JL1VTNRadM68cIMQ`,
       "headers": {
         "Host": "sendbeans.jd.com",
         "Origin": "https://sendbeans.jd.com",
@@ -240,9 +186,9 @@ async function myReward(){
 async function getActivityList(){
   return new Promise((resolve) => {
     let lkt = new Date().getTime()
-    let lks = $.md5('' + 'RtKLB8euDo7KwsO0' + lkt).toString()
+    let lks = $.md5('' + 'JL1VTNRadM68cIMQ' + lkt).toString()
     let options = {
-      "url": `https://sendbeans.jd.com/common/api/bean/activity/get/entry/list/by/channel?channelId=14&channelType=H5&sendType=0&singleActivity=false&invokeKey=RtKLB8euDo7KwsO0`,
+      "url": `https://sendbeans.jd.com/common/api/bean/activity/get/entry/list/by/channel?channelId=14&channelType=H5&sendType=0&singleActivity=false&invokeKey=JL1VTNRadM68cIMQ`,
       "headers": {
         "Host": "sendbeans.jd.com",
         "Origin": "https://sendbeans.jd.com",
@@ -358,9 +304,9 @@ async function rewardMain(){
 async function rewardBean(){
   return new Promise((resolve) => {
     let lkt = new Date().getTime()
-    let lks = $.md5('' + 'RtKLB8euDo7KwsO0' + lkt).toString()
+    let lks = $.md5('' + 'JL1VTNRadM68cIMQ' + lkt).toString()
     let options = {
-      "url": `https://draw.jdfcloud.com/common/api/bean/activity/sendBean?rewardRecordId=${$.rewardRecordId}&jdChannelId=&userSource=mp&appId=wxccb5c536b0ecd1bf&invokeKey=RtKLB8euDo7KwsO0`,
+      "url": `https://draw.jdfcloud.com/common/api/bean/activity/sendBean?rewardRecordId=${$.rewardRecordId}&jdChannelId=&userSource=mp&appId=wxccb5c536b0ecd1bf&invokeKey=JL1VTNRadM68cIMQ`,
       "headers":  {
         'content-type' : `application/json`,
         'Connection' : `keep-alive`,
@@ -407,9 +353,9 @@ function getRandomArrayElements(arr, count) {
 async function help() {
   await new Promise((resolve) => {
     let lkt = new Date().getTime()
-    let lks = $.md5('' + 'RtKLB8euDo7KwsO0' + lkt + $.activityCode).toString()
+    let lks = $.md5('' + 'JL1VTNRadM68cIMQ' + lkt + $.activityCode).toString()
     let options = {
-      "url": `https://draw.jdfcloud.com/common/api/bean/activity/participate?activityCode=${$.activityCode}&activityId=${$.activityId}&inviteUserPin=${encodeURIComponent($.oneTuanInfo['user'])}&invokeKey=RtKLB8euDo7KwsO0&timestap=${Date.now()}`,
+      "url": `https://draw.jdfcloud.com/common/api/bean/activity/participate?activityCode=${$.activityCode}&activityId=${$.activityId}&inviteUserPin=${encodeURIComponent($.oneTuanInfo['user'])}&invokeKey=JL1VTNRadM68cIMQ&timestap=${Date.now()}`,
       "headers":  {
         'content-type' : `application/json`,
         'Connection' : `keep-alive`,
@@ -447,8 +393,8 @@ async function help() {
 
 async function invite() {
   let lkt = new Date().getTime()
-  let lks = $.md5('' + 'RtKLB8euDo7KwsO0' + lkt + $.activityCode).toString()
-  const url = `https://draw.jdfcloud.com/common/api/bean/activity/invite?activityCode=${$.activityCode}&openId=&activityId=${$.activityId}&userSource=mp&formId=123&jdChannelId=&fp=&appId=wxccb5c536b0ecd1bf&invokeKey=RtKLB8euDo7KwsO0`;
+  let lks = $.md5('' + 'JL1VTNRadM68cIMQ' + lkt + $.activityCode).toString()
+  const url = `https://draw.jdfcloud.com/common/api/bean/activity/invite?activityCode=${$.activityCode}&openId=&activityId=${$.activityId}&userSource=mp&formId=123&jdChannelId=&fp=&appId=wxccb5c536b0ecd1bf&invokeKey=JL1VTNRadM68cIMQ`;
   const method = `POST`;
   const headers = {
     'content-type' : `application/json`,
@@ -492,8 +438,8 @@ async function invite() {
 
 async function getActivityDetail() {
   let lkt = new Date().getTime()
-  let lks = $.md5('' + 'RtKLB8euDo7KwsO0' + lkt + $.activityCode).toString()
-  const url = `https://draw.jdfcloud.com/common/api/bean/activity/detail?activityCode=${$.activityCode}&activityId=${$.activityId}&userOpenId=&timestap=${Date.now()}&userSource=mp&jdChannelId=&appId=wxccb5c536b0ecd1bf&invokeKey=RtKLB8euDo7KwsO0`;
+  let lks = $.md5('' + 'JL1VTNRadM68cIMQ' + lkt + $.activityCode).toString()
+  const url = `https://draw.jdfcloud.com/common/api/bean/activity/detail?activityCode=${$.activityCode}&activityId=${$.activityId}&userOpenId=&timestap=${Date.now()}&userSource=mp&jdChannelId=&appId=wxccb5c536b0ecd1bf&invokeKey=JL1VTNRadM68cIMQ`;
   const method = `GET`;
   const headers = {
     'cookie' : $.cookie,
