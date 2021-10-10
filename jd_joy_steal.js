@@ -23,7 +23,7 @@ cron "10 0-21/3 * * *" script-path=jd_joy_steal.js,tag=宠汪汪偷好友积分�
 宠汪汪偷好友积分与狗粮 = type=cron,script-path=jd_joy_steal.js, cronexpr="10 0-21/3 * * *", timeout=3600, enable=true
 */
 const $ = new Env('宠汪汪偷好友积分与狗粮');
-const zooFaker = require('./utils/JDJRValidator_Pure');
+const zooFaker = require('./JDJRValidator_Aaron');
 $.get = zooFaker.injectToRequest2($.get.bind($));
 $.post = zooFaker.injectToRequest2($.post.bind($));
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -91,7 +91,7 @@ if ($.isNode() && process.env.jdJoyStealCoin) {
       message = '';
       subTitle = '';
       $.validate = '';
-      // const zooFaker = require('./utils/JDJRValidator_Pure');
+      // const zooFaker = require('./JDJRValidator_Aaron');
       // $.validate = await zooFaker.injectToRequest()
       await jdJoySteal();
       await showMsg();
@@ -291,7 +291,7 @@ function enterRoom() {
     const host = `draw.jdfcloud.com`;
     const reqSource = 'weapp';
     let opt = {
-      url: `//draw.jdfcloud.com/common/pet/enterRoom/h5?invitePin=&openId=&invokeKey=RtKLB8euDo7KwsO0`,
+      url: `//draw.jdfcloud.com/common/pet/enterRoom/h5?invitePin=&openId=&invokeKey=JL1VTNRadM68cIMQ`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -316,8 +316,8 @@ function enterRoom() {
 function getFriends(currentPage = '1') {
   return new Promise(resolve => {
     let opt = {
-      url: `//draw.jdfcloud.com//common/pet/api/getFriends?itemsPerPage=20&currentPage=${currentPage * 1}&invokeKey=RtKLB8euDo7KwsO0`,
-      // url: `//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=RtKLB8euDo7KwsO0`,
+      url: `//draw.jdfcloud.com//common/pet/api/getFriends?itemsPerPage=20&currentPage=${currentPage * 1}&invokeKey=JL1VTNRadM68cIMQ`,
+      // url: `//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5&invokeKey=JL1VTNRadM68cIMQ`,
       method: "GET",
       data: {},
       credentials: "include",
@@ -325,7 +325,7 @@ function getFriends(currentPage = '1') {
     }
     const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     let lkt = new Date().getTime()
-    let lks = $.md5('' + 'RtKLB8euDo7KwsO0' + lkt).toString()
+    let lks = $.md5('' + 'JL1VTNRadM68cIMQ' + lkt).toString()
     const options = {
       url: url.replace(/reqSource=h5/, 'reqSource=weapp'),
       headers: {
@@ -506,7 +506,7 @@ function getRandomFood(friendPin) {
 function getCoinChanges() {
   return new Promise(resolve => {
     let opt = {
-      url: `//jdjoy.jd.com/common/pet/getCoinChanges?changeDate=${Date.now()}&invokeKey=RtKLB8euDo7KwsO0`,
+      url: `//jdjoy.jd.com/common/pet/getCoinChanges?changeDate=${Date.now()}&invokeKey=JL1VTNRadM68cIMQ`,
       // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
       method: "GET",
       data: {},
@@ -515,7 +515,7 @@ function getCoinChanges() {
     }
     const url = "https:"+ taroRequest(opt)['url'] + $.validate;
     let lkt = new Date().getTime()
-    let lks = $.md5('' + 'RtKLB8euDo7KwsO0' + lkt).toString()
+    let lks = $.md5('' + 'JL1VTNRadM68cIMQ' + lkt).toString()
     const options = {
       url,
       headers: {
@@ -635,7 +635,7 @@ function TotalBean() {
 }
 function taskPostUrl(url, Host, reqSource) {
   let lkt = new Date().getTime()
-  let lks = $.md5('' + 'RtKLB8euDo7KwsO0' + lkt).toString()
+  let lks = $.md5('' + 'JL1VTNRadM68cIMQ' + lkt).toString()
   return {
     url: url,
     headers: {
@@ -655,7 +655,7 @@ function taskPostUrl(url, Host, reqSource) {
 }
 function taskUrl(functionId, friendPin) {
   let opt = {
-    url: `//jdjoy.jd.com/common/pet/${functionId}?friendPin=${encodeURI(friendPin)}&invokeKey=RtKLB8euDo7KwsO0`,
+    url: `//jdjoy.jd.com/common/pet/${functionId}?friendPin=${encodeURI(friendPin)}&invokeKey=JL1VTNRadM68cIMQ`,
     // url: `//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5`,
     method: "GET",
     data: {},
@@ -664,7 +664,7 @@ function taskUrl(functionId, friendPin) {
   }
   const url = "https:"+ taroRequest(opt)['url'] + $.validate;
   let lkt = new Date().getTime()
-  let lks = $.md5('' + 'RtKLB8euDo7KwsO0' + lkt).toString()
+  let lks = $.md5('' + 'JL1VTNRadM68cIMQ' + lkt).toString()
   return {
     url,
     headers: {
