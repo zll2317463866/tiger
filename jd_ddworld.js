@@ -1,9 +1,16 @@
 /*
 * 活动地址:https://ddsj-dz.isvjcloud.com/dd-world/load_app/load_app.html
+*
+* 环境变量：兑换京豆变量：DDEXCHANGE，默认999
+* DDEXCHANGE="999"京豆从多到少兑换，先兑换1000，1000兑换完后兑换500
+* DDEXCHANGE="6"只兑换1000京豆
+* DDEXCHANGE="5"只兑换500京豆
+* DDEXCHANGE="1"只兑换200京豆
 * */
 const $ = new Env('东东世界');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const exchangeId = $.isNode() ? (process.env.DDEXCHANGE ? process.env.DDEXCHANGE : "999"):"999";
 let cookiesArr = [];
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
@@ -82,10 +89,39 @@ async function main() {
     $.userInfo = {};
     await takeGetRequest('get_user_info');
     console.log(`助力码：${$.userInfo.openid}`)
+    $.taskInfo = {};
     $.taskList = [];
     await takeGetRequest('get_task');
     await $.wait(2000);
     await doTask();
+    await $.wait(2000);
+    console.log(`\n`);
+    await takeGetRequest('get_task');
+    let userScore = $.taskInfo.userScore;
+    $.exChangeList = []
+    await takeGetRequest('get_exchange');
+    for (let i = $.exChangeList.length -1; i >= 0 ; i--) {
+        let oneExchange = $.exChangeList[i];
+        console.log(`奖励：${oneExchange.name}，库存：${oneExchange.stock}`);
+        if(exchangeId !== '999' && Number(exchangeId) !== oneExchange.id){
+            continue;
+        }
+        if(userScore >= oneExchange.coins && oneExchange.stock >0 && oneExchange.times_limit !== oneExchange.exchange_total){
+            console.log(`兑换${oneExchange.name}`);
+            $.changeId = oneExchange.id;
+            await takePostRequest('do_exchange');
+            break;
+        }else{
+            if(oneExchange.stock >0){
+                console.log(`当前积分：${userScore},需要${oneExchange.coins}积分才能兑换${oneExchange.name}`);
+            }else{
+                console.log(`兑换${oneExchange.name},库存不足,不能兑换`);
+            }
+        }
+        if(oneExchange.times_limit !== oneExchange.exchange_total && exchangeId === '999'){
+            break;
+        }
+    }
 }
 function getRandomArrayElements(arr, count) {
     var shuffled = arr.slice(0), i = arr.length, min = i - count, temp, index;
@@ -99,6 +135,7 @@ function getRandomArrayElements(arr, count) {
 }
 
 async function doTask(){
+    $.taskDetailList = []
     for (let i = 0; i < $.taskList.length; i++) {
         $.oneTask = $.taskList[i];
         $.taskDetailList = $.oneTask.simpleRecordInfoVo || $.oneTask.browseShopVo || $.oneTask.shoppingActivityVos || $.oneTask.productInfoVos ||$.oneTask.assistTaskDetailVo;
@@ -116,7 +153,12 @@ async function doTask(){
             continue;
         }
         if($.oneTask.taskType === 12){
-            $.info = $.taskDetailList;
+            if(Array.isArray($.taskDetailList)){
+                $.info = $.taskDetailList[0];
+            }else{
+                $.info = $.taskDetailList;
+            }
+            console.log('111:'+JSON.stringify($.info ))
             console.log(`任务：${$.oneTask.taskName} 去执行`);
             await takePostRequest('do_task');
             await $.wait(1000);
@@ -140,7 +182,6 @@ async function doTask(){
 
 async function takePostRequest(type) {
     let body = ``;
-
     switch (type) {
         case 'jd-user-info':
             body = `token=${$.token}&source=01`;
@@ -150,6 +191,9 @@ async function takePostRequest(type) {
             break;
         case 'do_assist_task':
             body = `taskToken=${$.oneInvite.taskToken}&inviter_id=${$.oneInvite.inviter_id}`;
+            break;
+        case 'do_exchange':
+            body = `id=${$.changeId}`;
             break;
         default:
             console.log(`错误${type}`);
@@ -234,6 +278,7 @@ function dealReturn(type, data) {
         case 'get_task':
             if (data.bizCode === '0') {
                 $.taskList = data.result.taskVos;
+                $.taskInfo = data.result;
             }
             break;
         case 'do_task':
@@ -252,14 +297,19 @@ function dealReturn(type, data) {
                 console.log(`助力次数已用完`);
             }
             break;
+        case 'get_exchange':
+            if(data.length > 0 ){
+                $.exChangeList = data;
+            }
+            break;
+        case 'do_exchange':
+            console.log(JSON.stringify(data));
+            break;
         default:
             console.log('异常');
             console.log(JSON.stringify(data));
     }
 }
-
-
-
 async function getToken() {
     let config = {
         url: 'https://api.m.jd.com/client.action',
