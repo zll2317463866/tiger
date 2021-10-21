@@ -50,7 +50,7 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
     await $.wait(1000)
     res = await getAuthorShareCode('https://cdn.jsdelivr.net/gh/Aaron-lv/updateTeam@master/shareCodes/jxhb.json')
   }
- 
+  if (res && res.activeId) $.activeId = res.activeId;
   $.authorMyShareIds = [...((res && res.codes) || [])];
   //开启红包,获取互助码
   for (let i = 0; i < cookiesArr.length; i++) {
