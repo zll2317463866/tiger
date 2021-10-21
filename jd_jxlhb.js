@@ -1,23 +1,23 @@
 /*
 京喜领88元红包
 活动入口：京喜app-》我的-》京喜领88元红包
-助力逻辑：自己京东账号相互助力
+助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者
 温馨提示：如提示助力火爆，可尝试寻找京东客服
 脚本兼容: Quantumult X, Surge, Loon, JSBox, Node.js
 ==============Quantumult X==============
 [task_local]
 #京喜领88元红包
-24 0,2 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_jxlhb.js, tag=京喜领88元红包, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+4 2,10 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_jxlhb.js, tag=京喜领88元红包, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
 ==============Loon==============
 [Script]
-cron "24 0,2 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_jxlhb.js,tag=京喜领88元红包
+cron "4 2,10 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_jxlhb.js,tag=京喜领88元红包
 
 ================Surge===============
-京喜领88元红包 = type=cron,cronexp="24 0,2 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_jxlhb.js
+京喜领88元红包 = type=cron,cronexp="4 2,10 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_jxlhb.js
 
 ===============小火箭==========
-京喜领88元红包 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_jxlhb.js, cronexpr="24 0,2 * * *", timeout=3600, enable=true
+京喜领88元红包 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_jxlhb.js, cronexpr="4 2,10 * * *", timeout=3600, enable=true
  */
 const $ = new Env('京喜领88元红包');
 const notify = $.isNode() ? require('./sendNotify') : {};
@@ -44,13 +44,7 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
       '活动入口：京喜app-》我的-》京喜领88元红包\n' +
       '助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者\n' +
       '温馨提示：如提示助力火爆，可尝试寻找京东客服')
-  let res = []
-  res = await getAuthorShareCode('')
-  if (!res) {
-    $.http.get({url: ''}).then((resp) => {}).catch((e) => $.log('刷新CDN异常', e));
-    await $.wait(1000)
-    res = await getAuthorShareCode('')
-  }
+
   if (res && res.activeId) $.activeId = res.activeId;
   $.authorMyShareIds = [...((res && res.codes) || [])];
   //开启红包,获取互助码
@@ -60,6 +54,8 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
     $.index = i + 1;
     $.isLogin = true
     $.nickName = ''
+    UA = `jdpingou;iPhone;4.13.0;14.4.2;${randomString(40)};network/wifi;model/iPhone10,2;appBuild/100609;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/1;hasOCPay/0;supportBestPay/0;session/${Math.random * 98 + 1};pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`
+    UAInfo[$.UserName] = UA
     await TotalBean();
     console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
     if (!$.isLogin) {
@@ -70,9 +66,7 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
       }
       continue
     }
-    UA = `jdpingou;iPhone;4.13.0;14.4.2;${randomString(40)};network/wifi;model/iPhone10,2;appBuild/100609;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/1;hasOCPay/0;supportBestPay/0;session/${Math.random * 98 + 1};pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`
     await main();
-    UAInfo[$.UserName] = UA
   }
   //互助
   console.log(`\n\n自己京东账号助力码：\n${JSON.stringify($.packetIdArr)}\n\n`);
