@@ -1,7 +1,7 @@
 /*
 
 #清空购物车
-0 0 1 5 * jd_cleancart.js, tag=清空购物车, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+0 23 * * * jd_cleancart.js, tag=清空购物车, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
  */
 const $ = new Env('清空购物车');
