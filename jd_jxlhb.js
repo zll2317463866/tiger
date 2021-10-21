@@ -1,23 +1,23 @@
 /*
 京喜领88元红包
 活动入口：京喜app-》我的-》京喜领88元红包
-助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者
+助力逻辑：自己京东账号相互助力
 温馨提示：如提示助力火爆，可尝试寻找京东客服
 脚本兼容: Quantumult X, Surge, Loon, JSBox, Node.js
 ==============Quantumult X==============
 [task_local]
 #京喜领88元红包
-4 2,1 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_jxlhb.js, tag=京喜领88元红包, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+11 0,7 * * * https://raw.githubusercontent.com/KingRan/JDJB/main/jd_jxlhb_new.js, tag=京喜领88元红包, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
 ==============Loon==============
 [Script]
-cron "4 2,1 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_jxlhb.js,tag=京喜领88元红包
+cron "11 0,7 * * *" script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_jxlhb_new.js,tag=京喜领88元红包
 
 ================Surge===============
-京喜领88元红包 = type=cron,cronexp="4 2,1 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_jxlhb.js
+京喜领88元红包 = type=cron,cronexp="11 0,7 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_jxlhb_new.js
 
 ===============小火箭==========
-京喜领88元红包 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_jxlhb.js, cronexpr="4 2,1 * * *", timeout=3600, enable=true
+京喜领88元红包 = type=cron,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_jxlhb_new.js, cronexpr="11 0,7 * * *", timeout=3600, enable=true
  */
 const $ = new Env('京喜领88元红包');
 const notify = $.isNode() ? require('./sendNotify') : {};
@@ -33,7 +33,7 @@ if ($.isNode()) {
   cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...$.toObj($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 $.packetIdArr = [];
-$.activeId = '489177';
+$.activeId = '525597';
 const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
 !(async () => {
   if (!cookiesArr[0]) {
@@ -44,12 +44,7 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
       '活动入口：京喜app-》我的-》京喜领88元红包\n' +
       '助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者\n' +
       '温馨提示：如提示助力火爆，可尝试寻找京东客服')
-  let res = await getAuthorShareCode('https://raw.githubusercontent.com/Aaron-lv/updateTeam/master/shareCodes/jxhb.json')
-  if (!res) {
-    $.http.get({url: 'https://purge.jsdelivr.net/gh/Aaron-lv/updateTeam@master/shareCodes/jxhb.json'}).then((resp) => {}).catch((e) => $.log('刷新CDN异常', e));
-    await $.wait(1000)
-    res = await getAuthorShareCode('https://cdn.jsdelivr.net/gh/Aaron-lv/updateTeam@master/shareCodes/jxhb.json')
-  }
+  let res = await getAuthorShareCode('')
   if (res && res.activeId) $.activeId = res.activeId;
   $.authorMyShareIds = [...((res && res.codes) || [])];
   //开启红包,获取互助码
