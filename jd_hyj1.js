@@ -1,844 +1,372 @@
-/*
-cron 0 * * * * 环游记 自动入会、签到、任务、升级、开宝箱、捡金币
-半残品随便跑跑
-*/
-const $ = new Env('环游记');
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*
+'''
+项目名称: JD-Script / jd_hyj 
+Author: Curtin
+功能：环游记
+    1、好友助力，默认按顺序助力，每个号6次助力机会
+    2、浏览并关注任务
+    3、待完成
+Date: 2021/10/24 下午6:52
+Update: 2021/10/24 下午11:52
+TG交流 https://t.me/topstyle996
+TG频道 https://t.me/TopStyle2021
+cron: 0 0,23 * 10-11 *
+new Env('环游记');
+'''
 
-const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 
+# UA 可自定义你的, 默认随机生成UA。
+UserAgent = ''
 
-let cookiesArr = [],
-    cookie = '',
-    message;
-let secretp = '',
-    inviteId = []
+import os, re, sys
+import random, json, time
+try:
+    import requests
+except Exception as e:
+    print(e, "\n缺少requests 模块，请执行命令安装：pip3 install requests")
+    exit(3)
+from urllib.parse import unquote
+##############
 
-if ($.isNode()) {
-    Object.keys(jdCookieNode).forEach((item) => {
-        cookiesArr.push(jdCookieNode[item])
-    })
-    if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
-} else {
-    cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
-}
-const JD_API_HOST = 'https://api.m.jd.com/client.action';
-let inviteCodes = [
+# requests.packages.urllib3.disable_warnings()
+pwd = os.path.dirname(os.path.abspath(__file__)) + os.sep
 
-]
-$.shareCodesArr = [];
+###
+def userAgent():
+    """
+    随机生成一个UA
+    jdapp;iPhone;10.0.4;14.2;9fb54498b32e17dfc5717744b5eaecda8366223c;network/wifi;ADID/2CF597D0-10D8-4DF8-C5A2-61FD79AC8035;model/iPhone11,1;addressid/7785283669;appBuild/167707;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/null;supportJDSHWK/1
+    :return: ua
+    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.15(0x18000f29) NetType/WIFI Language/zh_CN'
 
-!(async() => {
-    if (!cookiesArr[0]) {
-        $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
-        return;
-    }
+    """
+    uuid = ''.join(random.sample('123456789abcdef123456789abcdef123456789abcdef123456789abcdef', 40))
+    addressid = ''.join(random.sample('1234567898647', 10))
+    iosVer = ''.join(random.sample(["14.5.1", "14.4", "14.3", "14.2", "14.1", "14.0.1", "13.7", "13.1.2", "13.1.1"], 1))
+    iosV = iosVer.replace('.', '_')
+    iPhone = ''.join(random.sample(["8", "9", "10", "11", "12", "13"], 1))
+    ADID = ''.join(random.sample('0987654321ABCDEF', 8)) + '-' + ''.join(
+        random.sample('0987654321ABCDEF', 4)) + '-' + ''.join(random.sample('0987654321ABCDEF', 4)) + '-' + ''.join(
+        random.sample('0987654321ABCDEF', 4)) + '-' + ''.join(random.sample('0987654321ABCDEF', 12))
+    if not UserAgent:
+        return f'jdapp;iPhone;10.0.4;{iosVer};{uuid};network/wifi;ADID/{ADID};model/iPhone{iPhone},1;addressid/{addressid};appBuild/167707;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS {iosV} like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/null;supportJDSHWK/1'
+    else:
+        return UserAgent
 
-    $.inviteIdCodesArr = {}
-    for (let i = 0; i < cookiesArr.length && true; i++) {
-        if (cookiesArr[i]) {
-            cookie = cookiesArr[i];
-            $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-            $.index = i + 1;
-            await getUA()
+class getJDCookie(object):
+    # 适配各种平台环境ck
+    def getckfile(self):
+        global v4f
+        curf = pwd + 'JDCookies.txt'
+        v4f = '/jd/config/config.sh'
+        ql_new = '/ql/config/env.sh'
+        ql_old = '/ql/config/cookie.sh'
+        if os.path.exists(curf):
+            with open(curf, "r", encoding="utf-8") as f:
+                cks = f.read()
+                f.close()
+            r = re.compile(r"pt_key=.*?pt_pin=.*?;", re.M | re.S | re.I)
+            cks = r.findall(cks)
+            if len(cks) > 0:
+                return curf
+            else:
+                pass
+        if os.path.exists(ql_new):
+            print("当前环境青龙面板新版")
+            return ql_new
+        elif os.path.exists(ql_old):
+            print("当前环境青龙面板旧版")
+            return ql_old
+        elif os.path.exists(v4f):
+            print("当前环境V4")
+            return v4f
+        return curf
+
+    # 获取cookie
+    def getCookie(self):
+        global cookies
+        ckfile = self.getckfile()
+        try:
+            if os.path.exists(ckfile):
+                with open(ckfile, "r", encoding="utf-8") as f:
+                    cks = f.read()
+                    f.close()
+                if 'pt_key=' in cks and 'pt_pin=' in cks:
+                    r = re.compile(r"pt_key=.*?pt_pin=.*?;", re.M | re.S | re.I)
+                    cks = r.findall(cks)
+                    if len(cks) > 0:
+                        if 'JDCookies.txt' in ckfile:
+                            print("当前获取使用 JDCookies.txt 的cookie")
+                        cookies = ''
+                        for i in cks:
+                            if 'pt_key=xxxx' in i:
+                                pass
+                            else:
+                                cookies += i
+                        return
+            else:
+                with open(pwd + 'JDCookies.txt', "w", encoding="utf-8") as f:
+                    cks = "#多账号换行，以下示例：（通过正则获取此文件的ck，理论上可以自定义名字标记ck，也可以随意摆放ck）\n账号1【Curtinlv】cookie1;\n账号2【TopStyle】cookie2;"
+                    f.write(cks)
+                    f.close()
+            if "JD_COOKIE" in os.environ:
+                if len(os.environ["JD_COOKIE"]) > 10:
+                    cookies = os.environ["JD_COOKIE"]
+                    print("已获取并使用Env环境 Cookie")
+        except Exception as e:
+            print(f"【getCookie Error】{e}")
+
+        # 检测cookie格式是否正确
+
+    def getUserInfo(self, ck, pinName, userNum):
+        url = 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder&channel=4&isHomewhite=0&sceneval=2&sceneval=2&callback='
+        headers = {
+            'Cookie': ck,
+            'Accept': '*/*',
+            'Connection': 'keep-alive',
+            'Referer': 'https://home.m.jd.com/myJd/home.action',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Host': 'me-api.jd.com',
+            'User-Agent': f'Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1',
+            'Accept-Language': 'zh-cn'
         }
+        try:
+            if sys.platform == 'ios':
+                requests.packages.urllib3.disable_warnings()
+                resp = requests.get(url=url, verify=False, headers=headers, timeout=60).json()
+            else:
+                resp = requests.get(url=url, headers=headers, timeout=60).json()
+            if resp['retcode'] == "0":
+                nickname = resp['data']['userInfo']['baseInfo']['nickname']
+                return ck, nickname
+            else:
+                context = f"账号{userNum}【{pinName}】Cookie 已失效！请重新获取。"
+                print(context)
+                return ck, False
+        except Exception:
+            context = f"账号{userNum}【{pinName}】Cookie 已失效！请重新获取。"
+            print(context)
+            return ck, False
+
+    def iscookie(self):
+        """
+        :return: cookiesList,userNameList,pinNameList
+        """
+        cookiesList = []
+        userNameList = []
+        pinNameList = []
+        if 'pt_key=' in cookies and 'pt_pin=' in cookies:
+            r = re.compile(r"pt_key=.*?pt_pin=.*?;", re.M | re.S | re.I)
+            result = r.findall(cookies)
+            if len(result) >= 1:
+                print("您已配置{}个账号".format(len(result)))
+                u = 1
+                for i in result:
+                    r = re.compile(r"pt_pin=(.*?);")
+                    pinName = r.findall(i)
+                    pinName = unquote(pinName[0])
+                    # 获取账号名
+                    ck, nickname = self.getUserInfo(i, pinName, u)
+                    if nickname != False:
+                        cookiesList.append(ck)
+                        userNameList.append(nickname)
+                        pinNameList.append(pinName)
+                    else:
+                        u += 1
+                        continue
+                    u += 1
+                if len(cookiesList) > 0 and len(userNameList) > 0:
+                    return cookiesList, userNameList, pinNameList
+                else:
+                    print("没有可用Cookie，已退出")
+                    exit(3)
+            else:
+                print("cookie 格式错误！...本次操作已退出")
+                exit(4)
+        else:
+            print("cookie 格式错误！...本次操作已退出")
+            exit(4)
+
+
+getCk = getJDCookie()
+getCk.getCookie()
+
+
+def buildHeaders(ck):
+    headers = {
+        'Accept': 'application/json, text/plain, */*',
+        'Origin': 'https://wbbny.m.jd.com',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Cookie': ck,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Host': 'api.m.jd.com',
+        'Connection': 'keep-alive',
+        'User-Agent': userAgent(),
+        # 'Referer': f'https://wbbny.m.jd.com/babelDiy/Zeus/2vVU4E7JLH9gKYfLQ5EVW6eN2P7B/index.html?babelChannel=jdappsyfc&shareType=taskHelp&inviteId=ZXASTT028Z1_cl4-8INRW9rJrQH-3oUxd6t1GFjRWn6u7zB55awQ&mpin=&from=sc&lng=113&lat=23&sid=&un_area=',
+        'Referer': f'https://wbbny.m.jd.com/babelDiy/Zeus/2vVU4E7JLH9gKYfLQ5EVW6eN2P7B/index.html?babelChannel=jdappsyfc&shareType=taskHelp&inviteId=ZXASTT028Z1_cl4-8INRW9rJrQH-3oUxd6t1GFjRWn6u7zB55awQ&mpin=RnFsl2daPGGLzNTMDSugzOUmYgysBguS0mhHAIPkgjc&from=sc&lng=113.367454&lat=23.112787&sid=4d0c87024e75822e2940d31c251c1b0w&un_area=1_2901_55567_0',
+        'Accept-Language': 'zh-cn'
     }
-    for (let i = 0; i < cookiesArr.length; i++) {
-        if (cookiesArr[i]) {
-            cookie = cookiesArr[i];
-            $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-            $.index = i + 1;
-            $.isLogin = true;
-            $.nickName = '';
-            message = '';
-            console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
-            //   await shareCodesFormat()
-            $.newShareCodes = []
-            for (let i = 0; i < $.newShareCodes.length && true; ++i) {
-                console.log(`\n开始助力 【${$.newShareCodes[i]}】`)
-                let res = await getInfo($.newShareCodes[i])
-                if (res && res['data'] && res['data']['bizCode'] === 0) {
-                    if (res['data']['result']['toasts'] && res['data']['result']['toasts'][0] && res['data']['result']['toasts'][0]['status'] === '3') {
-                        console.log(`助力次数已耗尽，跳出`)
-                        break
-                    }
-                    if (res['data']['result']['toasts'] && res['data']['result']['toasts'][0]) {
-                        console.log(`助力 【${$.newShareCodes[i]}】:${res.data.result.toasts[0].msg}`)
-                    }
-                }
-                if ((res && res['status'] && res['status'] === '3') || (res && res.data && res.data.bizCode === -11)) {
-                    // 助力次数耗尽 || 黑号
+    return headers
+
+def getHomeData(header):
+    try:
+        url = 'https://api.m.jd.com/client.action?functionId=travel_getHomeData'
+        body = 'functionId=travel_getHomeData&body={"inviteId":""}&client=wh5&clientVersion=1.0.0'
+        resp = requests.post(url=url, headers=header, data=body, timeout=10).json()
+        secretp = resp['data']['result']['homeMainInfo']['secretp']
+        return secretp
+    except:
+        return None
+
+def getinviteId(ck):
+    try:
+        url = 'https://api.m.jd.com/client.action?functionId=travel_getTaskDetail'
+        body = 'functionId=travel_getTaskDetail&body={}&client=wh5&clientVersion=1.0.0'
+        resp = requests.post(url=url, headers=buildHeaders(ck), data=body).json()
+        return resp['data']['result']['inviteId']
+    except:
+        return 'ZXASTT018v_53RR4Y9lHfIBub1AFjRWn6u7zB55awQ'
+
+# 获取任务list
+def travel_getTaskDetail(header):
+    try:
+        url = 'https://api.m.jd.com/client.action?functionId=travel_getTaskDetail'
+        body = 'functionId=travel_getTaskDetail&body={}&client=wh5&clientVersion=1.0.0'
+        resp = requests.post(url=url, headers=header, data=body).json()
+        taskVos = resp['data']['result']['taskVos']
+        return taskVos
+    except:
+        return None
+# 完成任务
+def travel_collectScore(header, taskId, taskToken, secretp):
+    try:
+        url = 'https://api.m.jd.com/client.action?functionId=travel_collectScore'
+        body = 'functionId=travel_collectScore&body={' + f'"taskId":"{taskId}","taskToken":"{taskToken}","actionType":1,' + f'%22ss%22:%22%7B%5C%22extraData%5C%22:%7B%5C%22log%5C%22:%5C%22%5C%22,%5C%22sceneid%5C%22:%5C%22HYJhPageh5%5C%22%7D,%5C%22secretp%5C%22:%5C%22{secretp}%5C%22,%5C%22random%5C%22:%5C%22%5C%22%7D%22%7D' + '&client=wh5&clientVersion=1.0.0'
+        resp = requests.post(url=url, headers=header, data=body).json()
+    except:
+        pass
+    # print("##完成结果：", resp)
+# 关注店铺
+def followShop(header, shopId):
+    try:
+        url = 'https://api.m.jd.com/client.action?functionId=followShop'
+        body = 'functionId=followShop&body={"shopId":"'+ shopId + '","follow":true,"type":"0"}&client=wh5&clientVersion=1.0.0'
+        resp = requests.post(url=url, headers=header, data=body).json()
+        print("\t└",resp['msg'])
+    except:
+        pass
+def qryCompositeMaterials(header, id):
+    url = 'https://api.m.jd.com/client.action?functionId=qryCompositeMaterials'
+    body = f'functionId=qryCompositeMaterials&body=%7B%22qryParam%22:%22%5B%7B%5C%22type%5C%22:%5C%22advertGroup%5C%22,%5C%22mapTo%5C%22:%5C%22taskPanelBanner%5C%22,%5C%22id%5C%22:%5C%22{id}%5C%22%7D%5D' +'","activityId":"2vVU4E7JLH9gKYfLQ5EVW6eN2P7B","pageId":"","reqSrc":"","applyKey":"jd_star"}&client=wh5&clientVersion=1.0.0&uuid='
+    resp = requests.post(url=url, headers=header, data=body).json()
+    print(resp)
+
+def qryViewkitCallbackResult(header, taskToken):
+    t = round(time.time() * 1000)
+    url = 'https://api.m.jd.com/client.action?functionId=qryViewkitCallbackResult&client=wh5'
+    body = 'body={"dataSource":"newshortAward","method":"getTaskAward","reqParams":"%7B%5C%22taskToken%5C%22%3A%5C%22' + taskToken + '%5C%22%7D","sdkVersion":"1.0.0","clientLanguage":"zh","onlyTimeId":' + str(t) + ',"riskParam":{"platform":"3","orgType":"2","openId":"-1","pageClickKey":"Babel_VKCoupon","eid":"","fp":"-1","shshshfp":"","shshshfpa":"","shshshfpb":"","childActivityUrl":"","userArea":"-1","client":"","clientVersion":"","uuid":"","osVersion":"","brand":"","model":"","networkType":"","jda":"-1"}}'
+    resp = requests.post(url=url, headers=header, data=body).json()
+    if 'success' in resp['msg']:
+        print("\t\t└☺️", resp['toast']['subTitle'])
+    else:
+        print("\t\t└😓", resp)
+
+def task(ck):
+    header = buildHeaders(ck)
+    taskVos = travel_getTaskDetail(header)
+    secretp = getHomeData(header)
+    for t in taskVos:
+        t_status = t['status']
+        if t_status == 1:
+            taskId = t['taskId']
+            taskType = t['taskType']
+            if taskType == 7: # 浏览关注
+                print("\n☺️###开始浏览关注8s任务")
+                browseShopVo = t['browseShopVo']
+                for o in browseShopVo:
+                    if o['status'] == 1:
+                        taskToken = o['taskToken']
+                        shopId = o['shopId']
+                        id = o['advGroupId']
+                        print(f"\t└开始 {o['shopName']}")
+                        followShop(header, shopId)
+                        travel_collectScore(header, taskId, taskToken, secretp)
+                        print("\t\t└停留8秒~")
+                        time.sleep(8)
+                        # qryCompositeMaterials(header, id)
+                        qryViewkitCallbackResult(header, taskToken)
+
+
+
+# 好友邀请助力
+def friendsHelp(ck, inviteId, secretp, nickname):
+    try:
+        url = 'https://api.m.jd.com/client.action?functionId=travel_collectScore'
+        body = 'functionId=travel_collectScore&body={"ss":"%7B%5C%22extraData%5C%22:%7B%5C%22log%5C%22:%5C%22%5C%22,%5C%22sceneid%5C%22:%5C%22HYGJZYh5%5C%22%7D,%5C%22secretp%5C%22:%5C%22'+ secretp + '%5C%22,%5C%22random%5C%22:%5C%22%5C%22%7D","inviteId":"' + inviteId + '"}&client=wh5&clientVersion=1.0.0'
+        resp = requests.post(url=url, headers=buildHeaders(ck), data=body, timeout=10).json()
+        isSuccess = resp['data']['success']
+        result = resp['data']['bizMsg']
+        bizCode = resp['data']['bizCode']
+
+        if isSuccess:
+            print(f"\t└😆用户【{nickname}】{result}")
+        else:
+            print(f"\t└😯用户【{nickname}】{result}")
+        if bizCode == -201:
+            return True
+        else:
+            return False
+    except:
+        pass
+
+# 膨胀红包领取
+def travel_pk_receiveAward(ck):
+    try:
+        url = 'https://api.m.jd.com/client.action?functionId=travel_pk_receiveAward'
+        body = 'functionId=travel_pk_receiveAward&body={}&client=wh5&clientVersion=1.0.0'
+        resp = requests.post(url=url, headers=buildHeaders(ck), data=body, timeout=10).json()
+        print("👌成功领取红包🧧：",resp['data']['result']['value'])
+    except:
+        pass
+# 膨胀红包助力
+def travel_pk_collectPkExpandScore(ck, inviteId, secretp):
+    url = 'https://api.m.jd.com/client.action?functionId=travel_pk_collectPkExpandScore'
+    # body = 'functionId=travel_pk_collectPkExpandScore&body={"ss":"{\"extraData\":{\"log\":\"\",\"sceneid\":\"HYGJZYh5\"},\"secretp\":\"E7CRMI6DTcSTrabHO4r8_5la-GQ\",\"random\":\"35074436\"}","inviteId":"PKASTT018v_53RR4Y9lHfIBub1ACjRWnIaRzT0jeQOc"}&client=wh5&clientVersion=1.0.0'
+    body = 'functionId=travel_pk_collectPkExpandScore&body={"ss":"%7B%5C%22extraData%5C%22:%7B%5C%22log%5C%22:%5C%22%5C%22,%5C%22sceneid%5C%22:%5C%22HYGJZYh5%5C%22%7D,%5C%22secretp%5C%22:%5C%22' + secretp + '%5C%22,%5C%22random%5C%22:%5C%22%5C%22%7D","inviteId":"' + inviteId + '"}&client=wh5&clientVersion=1.0.0'
+    resp = requests.post(url=url, headers=buildHeaders(ck), data=body, timeout=10).json()
+    bizCode = resp['data']['bizCode']
+    bizMsg = resp['data']['bizMsg']
+    print(f"\t└{bizMsg}")
+    if bizCode == 103:
+        return True
+    else:
+        return False
+
+def start():
+    try:
+        scriptName = '### 环游记 ###'
+        print(scriptName)
+        cookiesList, userNameList, pinNameList = getCk.iscookie()
+        # for ck in cookiesList:
+        #     ss = 'PKASTT018v_53RR4Y9lHfIBub1ACjRWnIaRzT0jeQOc'
+        #     if travel_pk_collectPkExpandScore(ck, ss, getHomeData(ck)):
+        #         travel_pk_receiveAward(ck)
+        # exit(3)
+        for c,masterName in zip(cookiesList,userNameList):
+            print(f"\n### ☺️开始助力 {masterName}")
+            sharecode = getinviteId(c)
+            for ck,nickname in zip(cookiesList,userNameList):
+                if nickname == masterName:
+                    print(f"\t└😓{masterName} 不能助力自己，跳过~")
+                    continue
+                if friendsHelp(ck, sharecode, getHomeData(buildHeaders(ck)), nickname):
+                    print(f"\t└👌用户【{masterName}】助力任务已完成。")
                     break
-                }
-            }
-            try {
-                await get_secretp()
+            task(c)
+    except Exception as e:
+        print(e)
 
-                do {
-                    var conti = false
-                    await travel_collectAtuoScore()
-                    res = await travel_getTaskDetail()
+if __name__ == '__main__':
+    start()
 
-                    for (var p = 0; p < res.lotteryTaskVos[0].badgeAwardVos.length; p++) {
-                        if (res.lotteryTaskVos[0].badgeAwardVos[p].status == 3) {
-                            await travel_getBadgeAward(res.lotteryTaskVos[0].badgeAwardVos[p].awardToken)
-                        }
-
-                    }
-                    let task = []
-                    let r = []
-                    for (var p = 0; p < res.taskVos.length; p++) {
-                        task = res.taskVos[p]
-                        if (task.status != 1) continue
-                        switch (task.taskType) {
-                            case 7:
-                            case 9:
-                            case 3:
-                            case 6:
-                            case 26:
-                                var tmp = []
-                                if (task.taskType == 7) {
-                                    tmp = task.browseShopVo
-                                } else {
-                                    tmp = task.shoppingActivityVos
-                                }
-
-                                for (var o = 0; o < tmp.length; o++) {
-                                    console.log(`\n\n ${tmp[o].title?tmp[o].title:tmp[o].shopName}`)
-                                    if (tmp[o].status == 1) {
-                                        conti = true
-                                        await travel_collectScore(tmp[o].taskToken, task.taskId)
-                                    }
-
-                                }
-                                await $.wait(8000)
-                                for (var o = 0; o < tmp.length; o++) {
-                                    if (tmp[o].status == 1) {
-                                        conti = true
-                                        await qryViewkitCallbackResult(tmp[o].taskToken)
-                                    }
-
-                                }
-                                break
-                            case 2:
-                                r = await travel_getFeedDetail(task.taskId)
-                                var t = 0;
-                                for (var o = 0; o < r.productInfoVos.length; o++) {
-                                    if (r.productInfoVos[o].status == 1) {
-                                        conti = true
-                                        await travel_collectScore(r.productInfoVos[o].taskToken, task.taskId)
-                                        t++
-                                        if (t >= 5) break
-                                    }
-
-                                }
-                                break
-                            case 5:
-                                r = await travel_getFeedDetail2(task.taskId)
-                                var t = 0;
-                                for (var o = 0; o < r.browseShopVo.length; o++) {
-                                    if (r.browseShopVo[o].status == 1) {
-                                        conti = true
-                                        await travel_collectScore(r.browseShopVo[o].taskToken, task.taskId)
-                                        t++
-                                        if (t >= 5) break
-                                    }
-
-                                }
-                                break
-                            case 21:
-                                for (var o = 0; o < task.brandMemberVos.length; o++) {
-                                    if (task.brandMemberVos[o].status == 1) {
-                                        console.log(`\n\n ${task.brandMemberVos[o].title}`)
-                                        memberUrl = task.brandMemberVos[o].memberUrl
-                                        memberUrl = transform(memberUrl)
-                                        await join(task.brandMemberVos[o].vendorIds, memberUrl.channel, memberUrl.shopId ? memberUrl.shopId : "")
-                                        await travel_collectScore(task.brandMemberVos[o].taskToken, task.taskId)
-                                    }
-
-                                }
-                        }
-
-                    }
-                    await $.wait(1000)
-                } while (conti)
-
-
-                await travel_sign()
-                do {
-                    var ret = await travel_raise()
-                } while (ret)
-                console.log(`\n\n助力码：${res.inviteId}\n`)
-                $.newShareCodes.push(res.inviteId)
-                inviteId.push(res.inviteId)
-            } catch (e) {
-                $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-            }
-        }
-    }
-})()
-    .catch((e) => {
-        $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-    })
-    .finally(() => {
-        $.done();
-    })
-
-function transform(str) {
-    var REQUEST = new Object,
-        data = str.slice(str.indexOf("?") + 1, str.length - 1),
-        aParams = data.substr(1).split("&");
-    for (i = 0; i < aParams.length; i++) {
-        var aParam = aParams[i].split("=");
-        REQUEST[aParam[0]] = aParam[1]
-    }
-    return REQUEST
-}
-
-function get_secretp() {
-    let body = {};
-    return new Promise((resolve) => {
-        $.post(taskPostUrl("travel_getHomeData", body), async(err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
-                    if (safeGet(data)) {
-                        data = JSON.parse(data);
-                        if (data.code === 0) {
-                            if (data.data && data['data']['bizCode'] === 0) {
-                                secretp = data.data.result.homeMainInfo.secretp
-
-                            }
-                        } else {
-                            console.log(`\n\nsecretp失败:${JSON.stringify(data)}\n`)
-                        }
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve(data);
-            }
-        })
-    })
-}
-
-function travel_sign() {
-    let body = { "ss": { "extraData": { "log": "", "sceneid": "HYJhPageh5" }, "secretp": secretp, "random": randomString(6) } };
-    return new Promise((resolve) => {
-        $.post(taskPostUrl("travel_sign", body), async(err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
-                    if (safeGet(data)) {
-                        data = JSON.parse(data);
-                        if (data.code === 0) {
-                            if (data.data && data['data']['bizCode'] === 0) {
-
-                                console.log(`\n\n 签到成功`)
-                                resolve(true)
-                            } else {
-                                resolve(false)
-                            }
-                        } else {
-                            console.log(`\n\n签到失败:${JSON.stringify(data)}\n`)
-                            resolve(false)
-                        }
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve(data);
-            }
-        })
-    })
-}
-
-function travel_raise() {
-    let body = { "ss": { "extraData": { "log": "", "sceneid": "HYJhPageh5" }, "secretp": secretp, "random": randomString(6) } };
-    return new Promise((resolve) => {
-        $.post(taskPostUrl("travel_raise", body), async(err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
-                    if (safeGet(data)) {
-                        data = JSON.parse(data);
-                        if (data.code === 0) {
-                            if (data.data && data['data']['bizCode'] === 0) {
-
-                                console.log(`\n\n 升级成功`)
-                                resolve(true)
-                            } else {
-                                resolve(false)
-                            }
-                        } else {
-                            console.log(`\n\n升级失败:${JSON.stringify(data)}\n`)
-                            resolve(false)
-                        }
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve(data);
-            }
-        })
-    })
-}
-
-function travel_collectAtuoScore() {
-    let body = { "ss": { "extraData": { "log": "", "sceneid": "HYJhPageh5" }, "secretp": secretp, "random": randomString(6) } };
-    return new Promise((resolve) => {
-        $.post(taskPostUrl("travel_collectAtuoScore", body), async(err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
-                    if (safeGet(data)) {
-                        data = JSON.parse(data);
-                        if (data.code === 0) {
-                            if (data.data && data['data']['bizCode'] === 0) {
-
-                                console.log(`\n\n 成功领取${data.data.result.produceScore}个币`)
-                            }
-                        } else {
-                            console.log(`\n\nsecretp失败:${JSON.stringify(data)}\n`)
-                        }
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve(data);
-            }
-        })
-    })
-}
-
-function travel_getTaskDetail() {
-    let body = {};
-    return new Promise((resolve) => {
-        $.post(taskPostUrl("travel_getTaskDetail", body), async(err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
-                    if (safeGet(data)) {
-                        data = JSON.parse(data);
-                        if (data.code === 0) {
-                            if (data.data && data['data']['bizCode'] === 0) {
-                                if (data.data.result.inviteId == null) {
-                                    console.log("黑号")
-                                    resolve("")
-                                }
-                                inviteId.push(data.data.result.inviteId)
-                                resolve(data.data.result)
-                            }
-                        } else {
-                            console.log(`\n\nsecretp失败:${JSON.stringify(data)}\n`)
-                        }
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve(data);
-            }
-        })
-    })
-}
-
-function travel_collectScore(taskToken, taskId) {
-    let body = { "taskId": taskId, "taskToken": taskToken, "actionType": 1, "ss": { "extraData": { "log": "", "sceneid": "HYJhPageh5" }, "secretp": secretp, "random": randomString(6) } };
-
-    return new Promise((resolve) => {
-        $.post(taskPostUrl("travel_collectScore", body), async(err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
-                    if (safeGet(data)) {
-                        data = JSON.parse(data);
-                        if (data.code === 0) {
-                            if (data.data && data['data']['bizCode'] === 0) {
-                                console.log(data.msg)
-                            }
-                        } else {
-                            console.log(`\n\n 失败:${JSON.stringify(data)}\n`)
-                        }
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve(data);
-            }
-        })
-    })
-}
-
-function qryViewkitCallbackResult(taskToken) {
-    let body = { "dataSource": "newshortAward", "method": "getTaskAward", "reqParams": `{\"taskToken\":"${taskToken}"}`, "sdkVersion": "1.0.0", "clientLanguage": "zh", "onlyTimeId": new Date().getTime(), "riskParam": { "platform": "3", "orgType": "2", "openId": "-1", "pageClickKey": "Babel_VKCoupon", "eid": "", "fp": "-1", "shshshfp": "", "shshshfpa": "", "shshshfpb": "", "childActivityUrl": "", "userArea": "-1", "client": "", "clientVersion": "", "uuid": "", "osVersion": "", "brand": "", "model": "", "networkType": "", "jda": "-1" } };
-
-    return new Promise((resolve) => {
-        $.post(taskPostUrl2("qryViewkitCallbackResult", body), async(err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
-                    if (safeGet(data)) {
-                        if (data.indexOf("已完成") != -1) {
-                            data = JSON.parse(data);
-                            console.log(`\n\n ${data.toast.subTitle}`)
-                        } else {
-                            console.log(`\n\n失败:${JSON.stringify(data)}\n`)
-                        }
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve(data);
-            }
-        })
-    })
-}
-
-function travel_getBadgeAward(taskToken) {
-    let body = { "awardToken": taskToken };
-
-    return new Promise((resolve) => {
-        $.post(taskPostUrl("travel_getBadgeAward", body), async(err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
-                    if (safeGet(data)) {
-                        data = JSON.parse(data);
-                        if (data.code === 0) {
-                            if (data.data && data['data']['bizCode'] === 0) {
-                                for (let i = 0; i < data.data.result.myAwardVos.length; i++) {
-                                    switch (data.data.result.myAwardVos[i].type) {
-                                        case 15:
-                                            console.log(`\n\n 获得${data.data.result.myAwardVos[i].pointVo.score}币?`)
-                                            break
-                                        case 1:
-                                            console.log(`\n\n 获得优惠券 满${data.result.myAwardVos[1].couponVo.usageThreshold}-${data.result.myAwardVos[i].couponVo.quota}  ${data.result.myAwardVos[i].couponVo.useRange}`)
-                                            break
-                                    }
-                                }
-                            }
-                        } else {
-                            console.log(`\n\n 失败:${JSON.stringify(data)}\n`)
-                        }
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve(data);
-            }
-        })
-    })
-}
-
-function travel_getFeedDetail(taskId) {
-    let body = { "taskId": taskId.toString() };
-
-    return new Promise((resolve) => {
-        $.post(taskPostUrl("travel_getFeedDetail", body), async(err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
-                    if (safeGet(data)) {
-                        data = JSON.parse(data);
-                        if (data.code === 0) {
-                            if (data.data && data['data']['bizCode'] === 0) {
-                                resolve(data.data.result.addProductVos[0])
-                            }
-                        } else {
-                            console.log(`\n\n 失败:${JSON.stringify(data)}\n`)
-                        }
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve(data);
-            }
-        })
-    })
-}
-
-function travel_getFeedDetail2(taskId) {
-    let body = { "taskId": taskId.toString() };
-
-    return new Promise((resolve) => {
-        $.post(taskPostUrl("travel_getFeedDetail", body), async(err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
-                    if (safeGet(data)) {
-                        data = JSON.parse(data);
-                        if (data.code === 0) {
-                            if (data.data && data['data']['bizCode'] === 0) {
-                                resolve(data.data.result.taskVos[0])
-                            }
-                        } else {
-                            console.log(`\n\n 失败:${JSON.stringify(data)}\n`)
-                        }
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve(data);
-            }
-        })
-    })
-}
-
-function join(venderId, channel, shopId) {
-    let shopId_ = shopId != "" ? `,"shopId":"${shopId}"` : ""
-    return new Promise((resolve) => {
-        $.get({
-            url: `https://api.m.jd.com/client.action?appid=jd_shop_member&functionId=bindWithVender&body={"venderId":"${venderId}"${shopId_},"bindByVerifyCodeFlag":1,"registerExtend":{},"writeChildFlag":0,"channel":${channel}}&client=H5&clientVersion=9.2.0&uuid=88888`,
-            headers: {
-                'Content-Type': 'text/plain; Charset=UTF-8',
-                'Cookie': cookie,
-                'Host': 'api.m.jd.com',
-                'Connection': 'keep-alive',
-                'Content-Type': 'application/x-www-form-urlencoded',
-                "User-Agent": $.UA,
-                'Accept-Language': 'zh-cn',
-                'Referer': `https://shopmember.m.jd.com/shopcard/?venderId=${venderId}&shopId=${venderId}&venderType=5&channel=401&returnUrl=https://lzdz1-isv.isvjcloud.com/dingzhi/personal/care/activity/4540555?activityId=dz210768869313`,
-                'Accept-Encoding': 'gzip, deflate, br'
-            }
-        }, async(err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
-                    if (safeGet(data)) {
-                        if (data.indexOf("成功") != -1) {
-                            console.log(`\n\n 入会成功\n`)
-                        } else {
-                            console.log(`\n\n 失败:${JSON.stringify(data)}\n`)
-                        }
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp)
-            } finally {
-                resolve(data);
-            }
-        })
-    })
-}
-
-function taskPostUrl(functionId, body) {
-    return {
-        url: `${JD_API_HOST}`,
-        body: `functionId=${functionId}&body=${escape(JSON.stringify(body))}&client=wh5&clientVersion=1.0.0`,
-        headers: {
-            'Cookie': cookie,
-            'Host': 'api.m.jd.com',
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            "User-Agent": $.UA,
-            'Accept-Language': 'zh-cn',
-            'Accept-Encoding': 'gzip, deflate, br',
-        }
-    }
-}
-
-function taskPostUrl2(functionId, body) {
-    return {
-        url: `${JD_API_HOST}?functionId=${functionId}&client=wh5`,
-        body: `body=${escape(JSON.stringify(body))}`,
-        headers: {
-            'Cookie': cookie,
-            'Host': 'api.m.jd.com',
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            "User-Agent": $.UA,
-            'Accept-Language': 'zh-cn',
-            'Accept-Encoding': 'gzip, deflate, br',
-        }
-    }
-}
-
-//格式化助力码
-function shareCodesFormat() {
-    return new Promise(async resolve => {
-        // console.log(`第${$.index}个京东账号的助力码:::${$.shareCodesArr[$.index - 1]}`)
-        $.newShareCodes = [];
-        if ($.shareCodesArr[$.index - 1]) {
-            $.newShareCodes = [...inviteCodes, ...$.newShareCodes];
-        }
-        //if($.index == 1) $.newShareCodes = [...inviteCodes,...$.newShareCodes]
-        console.log(`第${$.index}个京东账号将要助力的好友${JSON.stringify($.newShareCodes)}`)
-        resolve();
-    })
-}
-
-function requireConfig() {
-    return new Promise(resolve => {
-        console.log(`开始获取${$.name}配置文件\n`);
-        //Node.js用户请在jdCookie.js处填写京东ck;
-        let shareCodes = [];
-        if ($.isNode()) {
-            if (process.env.JD_CITY_EXCHANGE) {
-                exchangeFlag = process.env.JD_CITY_EXCHANGE || exchangeFlag;
-            }
-            if (process.env.CITY_SHARECODES) {
-                if (process.env.CITY_SHARECODES.indexOf('\n') > -1) {
-                    shareCodes = process.env.CITY_SHARECODES.split('\n');
-                } else {
-                    shareCodes = process.env.CITY_SHARECODES.split('&');
-                }
-            }
-        }
-        console.log(`共${cookiesArr.length}个京东账号\n`);
-        $.shareCodesArr = [];
-        if ($.isNode()) {
-            Object.keys(shareCodes).forEach((item) => {
-                if (shareCodes[item]) {
-                    $.shareCodesArr.push(shareCodes[item])
-                }
-            })
-        }
-        console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
-        resolve()
-    })
-}
-
-function getUA() {
-    $.UA = `jdapp;android;10.0.6;11;9363537336739353-2636733333439346;network/wifi;model/KB2000;addressid/138121554;aid/9657c795bc73349d;oaid/;osVer/30;appBuild/88852;partner/oppo;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; KB2000 Build/RP1A.201005.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045537 Mobile Safari/537.36`
-}
-
-function randomString(e) {
-    e = e || 32;
-    let t = "abcdef0123456789",
-        a = t.length,
-        n = "";
-    for (i = 0; i < e; i++)
-        n += t.charAt(Math.floor(Math.random() * a));
-    return n
-}
-
-function randomNum(e) {
-    e = e || 32;
-    let t = "0123456789",
-        a = t.length,
-        n = "";
-    for (i = 0; i < e; i++)
-        n += t.charAt(Math.floor(Math.random() * a));
-    return n
-}
-
-function safeGet(data) {
-    try {
-        if (typeof JSON.parse(data) == "object") {
-            return true;
-        }
-    } catch (e) {
-        console.log(e);
-        console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-        return false;
-    }
-}
-
-function jsonParse(str) {
-    if (typeof str == "string") {
-        try {
-            return JSON.parse(str);
-        } catch (e) {
-            console.log(e);
-            $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
-            return [];
-        }
-    }
-}
-// prettier-ignore
-function Env(t, e) {
-    "undefined" != typeof process && JSON.stringify(process.env).indexOf("GITHUB") > -1 && process.exit(0);
-    class s {
-        constructor(t) { this.env = t }
-        send(t, e = "GET") { t = "string" == typeof t ? { url: t } : t; let s = this.get; return "POST" === e && (s = this.post), new Promise((e, i) => { s.call(this, t, (t, s, r) => { t ? i(t) : e(s) }) }) }
-        get(t) { return this.send.call(this.env, t) }
-        post(t) { return this.send.call(this.env, t, "POST") }
-    }
-    return new class {
-        constructor(t, e) { this.name = t, this.http = new s(this), this.data = null, this.dataFile = "box.dat", this.logs = [], this.isMute = !1, this.isNeedRewrite = !1, this.logSeparator = "\n", this.startTime = (new Date).getTime(), Object.assign(this, e), this.log("", `🔔${this.name}, 开始!`) }
-        isNode() { return "undefined" != typeof module && !!module.exports }
-        isQuanX() { return "undefined" != typeof $task }
-        isSurge() { return "undefined" != typeof $httpClient && "undefined" == typeof $loon }
-        isLoon() { return "undefined" != typeof $loon }
-        toObj(t, e = null) { try { return JSON.parse(t) } catch { return e } }
-        toStr(t, e = null) { try { return JSON.stringify(t) } catch { return e } }
-        getjson(t, e) {
-            let s = e;
-            const i = this.getdata(t);
-            if (i) try { s = JSON.parse(this.getdata(t)) } catch {}
-            return s
-        }
-        setjson(t, e) { try { return this.setdata(JSON.stringify(t), e) } catch { return !1 } }
-        getScript(t) { return new Promise(e => { this.get({ url: t }, (t, s, i) => e(i)) }) }
-        runScript(t, e) {
-            return new Promise(s => {
-                let i = this.getdata("@chavy_boxjs_userCfgs.httpapi");
-                i = i ? i.replace(/\n/g, "").trim() : i;
-                let r = this.getdata("@chavy_boxjs_userCfgs.httpapi_timeout");
-                r = r ? 1 * r : 20, r = e && e.timeout ? e.timeout : r;
-                const [o, h] = i.split("@"), n = { url: `http://${h}/v1/scripting/evaluate`, body: { script_text: t, mock_type: "cron", timeout: r }, headers: { "X-Key": o, Accept: "*/*" } };
-                this.post(n, (t, e, i) => s(i))
-            }).catch(t => this.logErr(t))
-        }
-        loaddata() {
-            if (!this.isNode()) return {}; {
-                this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path");
-                const t = this.path.resolve(this.dataFile),
-                    e = this.path.resolve(process.cwd(), this.dataFile),
-                    s = this.fs.existsSync(t),
-                    i = !s && this.fs.existsSync(e);
-                if (!s && !i) return {}; { const i = s ? t : e; try { return JSON.parse(this.fs.readFileSync(i)) } catch (t) { return {} } }
-            }
-        }
-        writedata() {
-            if (this.isNode()) {
-                this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path");
-                const t = this.path.resolve(this.dataFile),
-                    e = this.path.resolve(process.cwd(), this.dataFile),
-                    s = this.fs.existsSync(t),
-                    i = !s && this.fs.existsSync(e),
-                    r = JSON.stringify(this.data);
-                s ? this.fs.writeFileSync(t, r) : i ? this.fs.writeFileSync(e, r) : this.fs.writeFileSync(t, r)
-            }
-        }
-        lodash_get(t, e, s) {
-            const i = e.replace(/\[(\d+)\]/g, ".$1").split(".");
-            let r = t;
-            for (const t of i)
-                if (r = Object(r)[t], void 0 === r) return s;
-            return r
-        }
-        lodash_set(t, e, s) { return Object(t) !== t ? t : (Array.isArray(e) || (e = e.toString().match(/[^.[\]]+/g) || []), e.slice(0, -1).reduce((t, s, i) => Object(t[s]) === t[s] ? t[s] : t[s] = Math.abs(e[i + 1]) >> 0 == +e[i + 1] ? [] : {}, t)[e[e.length - 1]] = s, t) }
-        getdata(t) {
-            let e = this.getval(t);
-            if (/^@/.test(t)) {
-                const [, s, i] = /^@(.*?)\.(.*?)$/.exec(t), r = s ? this.getval(s) : "";
-                if (r) try {
-                    const t = JSON.parse(r);
-                    e = t ? this.lodash_get(t, i, "") : e
-                } catch (t) { e = "" }
-            }
-            return e
-        }
-        setdata(t, e) {
-            let s = !1;
-            if (/^@/.test(e)) {
-                const [, i, r] = /^@(.*?)\.(.*?)$/.exec(e), o = this.getval(i), h = i ? "null" === o ? null : o || "{}" : "{}";
-                try {
-                    const e = JSON.parse(h);
-                    this.lodash_set(e, r, t), s = this.setval(JSON.stringify(e), i)
-                } catch (e) {
-                    const o = {};
-                    this.lodash_set(o, r, t), s = this.setval(JSON.stringify(o), i)
-                }
-            } else s = this.setval(t, e);
-            return s
-        }
-        getval(t) { return this.isSurge() || this.isLoon() ? $persistentStore.read(t) : this.isQuanX() ? $prefs.valueForKey(t) : this.isNode() ? (this.data = this.loaddata(), this.data[t]) : this.data && this.data[t] || null }
-        setval(t, e) { return this.isSurge() || this.isLoon() ? $persistentStore.write(t, e) : this.isQuanX() ? $prefs.setValueForKey(t, e) : this.isNode() ? (this.data = this.loaddata(), this.data[e] = t, this.writedata(), !0) : this.data && this.data[e] || null }
-        initGotEnv(t) { this.got = this.got ? this.got : require("got"), this.cktough = this.cktough ? this.cktough : require("tough-cookie"), this.ckjar = this.ckjar ? this.ckjar : new this.cktough.CookieJar, t && (t.headers = t.headers ? t.headers : {}, void 0 === t.headers.Cookie && void 0 === t.cookieJar && (t.cookieJar = this.ckjar)) }
-        get(t, e = (() => {})) {
-            t.headers && (delete t.headers["Content-Type"], delete t.headers["Content-Length"]), this.isSurge() || this.isLoon() ? (this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, { "X-Surge-Skip-Scripting": !1 })), $httpClient.get(t, (t, s, i) => {!t && s && (s.body = i, s.statusCode = s.status), e(t, s, i) })) : this.isQuanX() ? (this.isNeedRewrite && (t.opts = t.opts || {}, Object.assign(t.opts, { hints: !1 })), $task.fetch(t).then(t => {
-                const { statusCode: s, statusCode: i, headers: r, body: o } = t;
-                e(null, { status: s, statusCode: i, headers: r, body: o }, o)
-            }, t => e(t))) : this.isNode() && (this.initGotEnv(t), this.got(t).on("redirect", (t, e) => {
-                try {
-                    if (t.headers["set-cookie"]) {
-                        const s = t.headers["set-cookie"].map(this.cktough.Cookie.parse).toString();
-                        s && this.ckjar.setCookieSync(s, null), e.cookieJar = this.ckjar
-                    }
-                } catch (t) { this.logErr(t) }
-            }).then(t => {
-                const { statusCode: s, statusCode: i, headers: r, body: o } = t;
-                e(null, { status: s, statusCode: i, headers: r, body: o }, o)
-            }, t => {
-                const { message: s, response: i } = t;
-                e(s, i, i && i.body)
-            }))
-        }
-        post(t, e = (() => {})) {
-            if (t.body && t.headers && !t.headers["Content-Type"] && (t.headers["Content-Type"] = "application/x-www-form-urlencoded"), t.headers && delete t.headers["Content-Length"], this.isSurge() || this.isLoon()) this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, { "X-Surge-Skip-Scripting": !1 })), $httpClient.post(t, (t, s, i) => {!t && s && (s.body = i, s.statusCode = s.status), e(t, s, i) });
-            else if (this.isQuanX()) t.method = "POST", this.isNeedRewrite && (t.opts = t.opts || {}, Object.assign(t.opts, { hints: !1 })), $task.fetch(t).then(t => {
-                const { statusCode: s, statusCode: i, headers: r, body: o } = t;
-                e(null, { status: s, statusCode: i, headers: r, body: o }, o)
-            }, t => e(t));
-            else if (this.isNode()) {
-                this.initGotEnv(t);
-                const { url: s, ...i } = t;
-                this.got.post(s, i).then(t => {
-                    const { statusCode: s, statusCode: i, headers: r, body: o } = t;
-                    e(null, { status: s, statusCode: i, headers: r, body: o }, o)
-                }, t => {
-                    const { message: s, response: i } = t;
-                    e(s, i, i && i.body)
-                })
-            }
-        }
-        time(t, e = null) { const s = e ? new Date(e) : new Date; let i = { "M+": s.getMonth() + 1, "d+": s.getDate(), "H+": s.getHours(), "m+": s.getMinutes(), "s+": s.getSeconds(), "q+": Math.floor((s.getMonth() + 3) / 3), S: s.getMilliseconds() }; /(y+)/.test(t) && (t = t.replace(RegExp.$1, (s.getFullYear() + "").substr(4 - RegExp.$1.length))); for (let e in i) new RegExp("(" + e + ")").test(t) && (t = t.replace(RegExp.$1, 1 == RegExp.$1.length ? i[e] : ("00" + i[e]).substr(("" + i[e]).length))); return t }
-        msg(e = t, s = "", i = "", r) {
-            const o = t => {
-                if (!t) return t;
-                if ("string" == typeof t) return this.isLoon() ? t : this.isQuanX() ? { "open-url": t } : this.isSurge() ? { url: t } : void 0;
-                if ("object" == typeof t) {
-                    if (this.isLoon()) {
-                        let e = t.openUrl || t.url || t["open-url"],
-                            s = t.mediaUrl || t["media-url"];
-                        return { openUrl: e, mediaUrl: s }
-                    }
-                    if (this.isQuanX()) {
-                        let e = t["open-url"] || t.url || t.openUrl,
-                            s = t["media-url"] || t.mediaUrl;
-                        return { "open-url": e, "media-url": s }
-                    }
-                    if (this.isSurge()) { let e = t.url || t.openUrl || t["open-url"]; return { url: e } }
-                }
-            };
-            if (this.isMute || (this.isSurge() || this.isLoon() ? $notification.post(e, s, i, o(r)) : this.isQuanX() && $notify(e, s, i, o(r))), !this.isMuteLog) {
-                let t = ["", "==============📣系统通知📣=============="];
-                t.push(e), s && t.push(s), i && t.push(i), console.log(t.join("\n")), this.logs = this.logs.concat(t)
-            }
-        }
-        log(...t) { t.length > 0 && (this.logs = [...this.logs, ...t]), console.log(t.join(this.logSeparator)) }
-        logErr(t, e) {
-            const s = !this.isSurge() && !this.isQuanX() && !this.isLoon();
-            s ? this.log("", `❗️${this.name}, 错误!`, t.stack) : this.log("", `❗️${this.name}, 错误!`, t)
-        }
-        wait(t) { return new Promise(e => setTimeout(e, t)) }
-        done(t = {}) {
-            const e = (new Date).getTime(),
-                s = (e - this.startTime) / 1e3;
-            this.log("", `🔔${this.name}, 结束! 🕛 ${s} 秒`), this.log(), (this.isSurge() || this.isQuanX() || this.isLoon()) && $done(t)
-        }
-    }(t, e)
-}
