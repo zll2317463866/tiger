@@ -11,12 +11,12 @@ Last Modified time: 2021-05-19 16:27:18
 1 0 * * * jd_redPacket.js, tag=京东全民开红包, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_redPacket.png, enabled=true
 ===================Loon==============
 [Script]
-cron "1 0 * * *" script-path=jd_redPacket.js, tag=京东全民开红包
+cron "0 0 * * *" script-path=jd_redPacket.js, tag=京东全民开红包
 ===============Surge===============
 [Script]
-京东全民开红包 = type=cron,cronexp="1 0 * * *",wake-system=1,timeout=3600,script-path=jd_redPacket.js
+京东全民开红包 = type=cron,cronexp="0 0 * * *",wake-system=1,timeout=3600,script-path=jd_redPacket.js
 ====================================小火箭=============================
-京东全民开红包 = type=cron,script-path=jd_redPacket.js, cronexpr="1 0 * * *", timeout=3600, enable=true
+京东全民开红包 = type=cron,script-path=jd_redPacket.js, cronexpr="0 0 * * *", timeout=3600, enable=true
  */
 const $ = new Env('京东全民开红包');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -24,7 +24,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
-$.redPacketId = [];
+$.redPacketId = ['376630652'];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
