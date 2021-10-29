@@ -10,7 +10,7 @@ Date: 2021/7/3 上午10:02
 TG交流 https://t.me/topstyle996
 TG频道 https://t.me/TopStyle2021
 update: 2021.7.24 14:21
-建议cron: 0 0 * 8 *  python3 jd_qjd.py
+建议cron: 0 0 * * *  python3 jd_qjd.py
 new Env('全民抢京豆 8.6-8.16');
 * 修复了助力活动不存在、增加了随机UA（如果未定义ua则启用随机UA）
 * 新增推送
@@ -21,7 +21,7 @@ new Env('全民抢京豆 8.6-8.16');
 # exit(0)
 #ck 优先读取【JDCookies.txt】 文件内的ck  再到 ENV的 变量 JD_COOKIE='ck1&ck2' 最后才到脚本内 cookies=ck
 cookies = ''
-qjd_zlzh = ['jd_597a54478d063', 'jd_454dae18af2e7','jd_jngZQJlNxctD']
+qjd_zlzh = ['', '','']
 
 # Env环境设置 通知服务
 # export BARK=''                   # bark服务,苹果商店自行搜索;
