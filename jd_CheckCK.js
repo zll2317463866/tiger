@@ -12,7 +12,7 @@ const {
 	DisableCk,
 	EnableCk,
 	getstatus
-} = require('./ql');
+} = require('./zll2317463866_tiger_ql');
 const api = got.extend({
 	retry: {
 		limit: 0
