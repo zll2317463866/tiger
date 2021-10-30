@@ -96,6 +96,32 @@ module.exports.DisableCk = async (eid) => {
   return body;
 };
 
+module.exports.EnableCk = async (eid) => {
+  const token = await getToken();
+  const body = await api({
+    method: 'put',
+    url: 'api/envs/enable',
+    params: { t: Date.now() },	
+    body: JSON.stringify([eid]),
+    headers: {
+      Accept: 'application/json',
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  }).json();
+  return body;
+};
+
+module.exports.getstatus = async (eid) => {
+  const envs = await this.getEnvs();
+  for (let i = 0; i < envs.length; i++) {	 
+	if(envs[i]._id==eid){
+		 return envs[i].status; 
+	  }
+  }  
+  return 99;
+};
+
 module.exports.delEnv = async (eid) => {
   const token = await getToken();
   const body = await api({
