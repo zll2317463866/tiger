@@ -1,5 +1,5 @@
 /* 
-cron 14 10 * * * https://raw.githubusercontent.com/smiek2221/scripts/master/jd_sign_graphics.js
+cron 14 10 * * * https://raw.githubusercontent.com/smiek2121/scripts/master/jd_sign_graphics.js
 只支持nodejs环境
 需要安装依赖 
 npm i png-js 或者 npm i png-js -S
@@ -9,7 +9,7 @@ npm i png-js 或者 npm i png-js -S
 修改域名 https://jdjoy.jd.com 可以改成ip https://49.7.27.236
 */
 
-const validator = require('./zll2317463866_tiger_JDJRValidator_Pure.js');
+const validator = require('./zll2317463866_tiger_JDJRValidator_Smiek.js');
 const Faker=require('./zll2317463866_tiger_sign_graphics_validate.js') 
 
 const $ = new Env('京东签到图形验证');
@@ -33,7 +33,7 @@ let signFlag = false
 let successNum = 0
 let errorNum = 0
 let JD_API_HOST = 'https://jdjoy.jd.com'
-$.invokeKey = 'JL1VTNRadM68cIMQ'
+$.invokeKey = 'q8DNJdpcfRQ69gIx'
 $.invokeKey = $.isNode() ? (process.env.JD_invokeKey ? process.env.JD_invokeKey : `${$.invokeKey}`) : ($.getdata('JD_invokeKey') ? $.getdata('JD_invokeKey') : `${$.invokeKey}`);
 let lkt = 0
 if(process.env.JOY_HOST){
