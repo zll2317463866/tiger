@@ -11,9 +11,8 @@
 #docker exec -it QL bash -c "pip3 install aiohttp"
 
 
-const $ = new Env('愤怒的锦鲤能用版本');
-//Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+#const $ = new Env('愤怒的锦鲤能用版本');
+
 #####
 import os,json,random,time,re,string,functools,asyncio
 import sys
