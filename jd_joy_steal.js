@@ -23,7 +23,7 @@ cron "10 0-21/3 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sy
 宠汪汪偷好友积分与狗粮 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_joy_steal.js, cronexpr="10 0-21/3 * * *", timeout=3600, enable=true
 */
 const $ = new Env('宠汪汪偷好友积分与狗粮');
-const zooFaker = require('./JDJRValidator_Aaron');
+const zooFaker = require('./zll2317463866_tiger_JDJRValidator_Aaron');
 $.get = zooFaker.injectToRequest2($.get.bind($));
 $.post = zooFaker.injectToRequest2($.post.bind($));
 const notify = $.isNode() ? require('./sendNotify') : '';
