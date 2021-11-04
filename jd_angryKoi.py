@@ -6,8 +6,11 @@
 # export JD_COOKIE="第1个cookie&第2个cookie"
 # export kois=" 第1个cookie的pin & 第2个cookie的pin "
 # 11/4 11:23 增加自动开红包
+#自己安装依赖：注意容器名字
+#docker exec -it QL bash -c "pip3 install --upgrade pip"
+#docker exec -it QL bash -c "pip3 install aiohttp"
 
-
+const $ = new Env('愤怒的锦鲤能用版本');
 import os,json,random,time,re,string,functools,asyncio
 import sys
 sys.path.append('../../tmp')
