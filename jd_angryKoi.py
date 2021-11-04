@@ -9,7 +9,7 @@
 #自己安装依赖：注意容器名字
 #docker exec -it QL bash -c "pip3 install --upgrade pip"
 #docker exec -it QL bash -c "pip3 install aiohttp"
-
+const $ = new Env('愤怒的锦鲤能用版本');
 
 import os,json,random,time,re,string,functools,asyncio
 import sys
