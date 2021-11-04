@@ -1,7 +1,7 @@
 /*
 京喜领88元红包
 活动入口：京喜app-》我的-》京喜领88元红包
-助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者
+助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力tiger,如有妨碍，请自行修改
 温馨提示：如提示助力火爆，可尝试寻找京东客服
 脚本兼容: Quantumult X, Surge, Loon, JSBox, Node.js
 ==============Quantumult X==============
@@ -42,14 +42,9 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
   }
   console.log('京喜领88元红包\n' +
       '活动入口：京喜app-》我的-》京喜领88元红包\n' +
-      '助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者\n' +
+      '助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力tiger,如有妨碍，请自行修改\n' +
       '温馨提示：如提示助力火爆，可尝试寻找京东客服')
-  let res = await getAuthorShareCode('')
-//  if (!res) {
-  //  $.http.get({url: 'https://purge.jsdelivr.net/gh/Aaron-lv/updateTeam@master/shareCodes/jxhb.json'}).then((resp) => {}).catch((e) => $.log('刷新CDN异常', e));
-  //  await $.wait(1000)
-   // res = await getAuthorShareCode('')
-  //}
+  let res = await getAuthorShareCode('8JVWRZo1Mgmoh6hh_XEPymdMOTScJMIcUURist1cHEqdKC3r3Bs0AlNzWC3BQYUi')
   if (res && res.activeId) $.activeId = res.activeId;
   $.authorMyShareIds = [...((res && res.codes) || [])];
   //开启红包,获取互助码
