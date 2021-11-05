@@ -12,7 +12,7 @@ let rebateCodes = ''
 const $ = new Env('第二期红包🧧');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
-const Faker = $.isNode() ? require('./sign_graphics_validate.js') : '';
+const Faker = $.isNode() ? require('./zll2317463866_tiger_sign_graphics_validate.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
     cookie = '';
