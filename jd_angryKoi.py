@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*
+'''
 # 愤怒的锦鲤
 # 入口>京东首页>领券>锦鲤红包
 # 环境变量JD_COOKIE，多账号用&分割
@@ -10,10 +13,11 @@
 #docker exec -it QL bash -c "pip3 install --upgrade pip"
 #docker exec -it QL bash -c "pip3 install aiohttp"
 
+cron: 0 0 * * *
+new Env('锦鲤红包');
+'''
 
-#const $ = new Env('愤怒的锦鲤能用版本');
 
-#####
 import os,json,random,time,re,string,functools,asyncio
 import sys
 sys.path.append('../../tmp')
@@ -29,7 +33,7 @@ except Exception as e:
     print(str(e) + "\n缺少requests模块, 请执行命令：pip3 install requests\n")
 requests.packages.urllib3.disable_warnings()
 
-run_send='no'     # yes或no, yes则启用通知推送服务
+run_send='yes'     # yes或no, yes则启用通知推送服务
 
 
 # 获取pin
@@ -118,7 +122,7 @@ cookie_list=Judge_env().main_run()
 class Msg(object):
     def getsendNotify(self, a=1):
         try:
-            url = 'https://ghproxy.com/https://raw.githubusercontent.com/wuye999/myScripts/main/sendNotify.py'
+            url = 'https://gitee.com/KingRan521/JD-Scripts/raw/master/sendNotify.js'
             response = requests.get(url,timeout=3)
             with open('sendNotify.py', "w+", encoding="utf-8") as f:
                 f.write(response.text)
@@ -320,13 +324,12 @@ def main():
     msg(f'====================共{len(cookie_list)}京东个账号Cookie=========\n')
 
     asyncio.run(asyncmain())
-    
+
     if run_send=='yes':
         send('愤怒的锦鲤')   # 通知服务
 
 
 if __name__ == '__main__':
     main()
-
 
 
