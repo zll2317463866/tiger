@@ -30,11 +30,11 @@ let cookiesArr = [], cookie = '', jdFruitShareArr = [], isBox = false, notify, n
 //助力好友分享码(最多3个,否则后面的助力失败),原因:京东农场每人每天只有3次助力机会
 //此此内容是IOS用户下载脚本到本地使用，填写互助码的地方，同一京东账号的好友互助码请使用@符号隔开。
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
-let shareCodes = [ 
- //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
+let shareCodes = [  //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
  '61ccfd34e8a9477a9daf414ab3ec743b@65b1b666599043dc81404a968cd6d6c7@f2d697353b404ff1b4e954eb75df046c@6fbd26cc27ac44d6a7fed34092453f77',
   //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
-  '61ccfd34e8a9477a9daf414ab3ec743b@65b1b666599043dc81404a968cd6d6c7@f2d697353b404ff1b4e954eb75df046c@6fbd26cc27ac44d6a7fed34092453f77',]
+  '61ccfd34e8a9477a9daf414ab3ec743b@65b1b666599043dc81404a968cd6d6c7@f2d697353b404ff1b4e954eb75df046c@6fbd26cc27ac44d6a7fed34092453f77',
+]
 let message = '', subTitle = '', option = {}, isFruitFinished = false;
 const retainWater = $.isNode() ? (process.env.retainWater ? process.env.retainWater : 100) : ($.getdata('retainWater') ? $.getdata('retainWater') : 100);//保留水滴大于多少g,默认100g;
 let jdNotify = false;//是否关闭通知，false打开通知推送，true关闭通知推送
@@ -46,7 +46,7 @@ $.newShareCode = [];
 const ZLC = !(process.env.JD_JOIN_ZLC && process.env.JD_JOIN_ZLC === 'false')
 !(async () => {
   if (!process.env.JD_JOIN_ZLC) {
-    console.log(`【注意】本脚本默认不会给助力池进行助力！`)
+    console.log(`【注意】本脚本默认会给助力池进行助力！\n如需加入助力池请添加TG群：https://t.me/jd_zero_205\n如不加入助力池互助，可添加变量名称：JD_JOIN_ZLC，变量值：false\n`)
   }
   await requireConfig();
   if (!cookiesArr[0]) {
@@ -116,7 +116,7 @@ const ZLC = !(process.env.JD_JOIN_ZLC && process.env.JD_JOIN_ZLC === 'false')
 async function jdFruit() {
   subTitle = `【京东账号${$.index}】${$.nickName}`;
   try {
-    await initForFarm();
+
     try {
       for (let index = 0; index < 5; index++) {
         await $.get(taskUrl("receiveStageEnergy", '%7B%22version%22%3A14%2C%22channel%22%3A1%2C%22babelChannel%22%3A%22120%22%7D&appid=wh5'), function (err, resp, data) {
@@ -126,27 +126,30 @@ async function jdFruit() {
       }
 
     } catch (error) { }
+
+    // await $.get(taskUrl2('https://api.m.jd.com/client.action?functionId=findBeanScene&appid=wh5'), function (err, resp, data) {
+    //   console.log('寻金豆:' + resp.body);
+    // })
+    // await $.wait(2000);
+
+    // await $.get(taskUrl2('https://api.m.jd.com/client.action?functionId=ddnc_getTreasureBoxAward&body=%7B%22type%22%3A2%2C%22babelChannel%22%3A%22120%22%2C%22line%22%3A%22getBean%22%2C%22version%22%3A14%2C%22channel%22%3A1%7D&appid=wh5'), function (err, resp, data) {
+    //   console.log('逛首页领金豆奖励:' + resp.body);
+    // })
+    // await $.wait(2000);
+
+
+    await initForFarm();
     if ($.farmInfo.farmUserPro) {
-      // ***************************
-      // 报告运行次数
-      if (ZLC) {
-        $.get({
-          url: `https://api.jdsharecode.xyz/api/runTimes?activityId=farm&sharecode=${$.farmInfo.farmUserPro.shareCode}`
-        }, (err, resp, data) => {
-          if (err) {
-            console.log('上报失败', err)
-          } else {
-            if (data === '1' || data === '0') {
-              console.log('上报成功')
-            }
-          }
-        })
-      }
-      // ***************************
+
       // option['media-url'] = $.farmInfo.farmUserPro.goodsImage;
       message = `【水果名称】${$.farmInfo.farmUserPro.name}\n`;
       // console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.farmInfo.farmUserPro.shareCode}\n`);
       // jdFruitShareArr.push($.farmInfo.farmUserPro.shareCode)
+      await $.get({
+        url: 'http://106.13.233.51:8080/activeJdFruitCode?code=' + $.farmInfo.farmUserPro.shareCode
+      }, function (err, resp, data) {
+        console.log('互助码状态:' + resp.body);
+      })
       console.log(`\n【已成功兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`);
       message += `【已兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`;
       await masterHelpShare();//助力好友
@@ -686,13 +689,7 @@ async function masterHelpShare() {
   let salveHelpAddWater = 0;
   let remainTimes = 3;//今日剩余助力次数,默认3次（京东农场每人每天3次助力机会）。
   let helpSuccessPeoples = '';//成功助力好友
-  // console.log(`格式化后的助力码::${JSON.stringify(newShareCodes)}\n`);
-  // if ($.isNode() && !process.env.FRUITSHARECODES) {
-  //   console.log(`您未填写助力码变量，开始账号内互助，再帮【zero205】助力`);
-  //   $.newShareCode = [...(jdFruitShareArr || []), ...(newShareCodes || [])]
-  // } else {
-  //   $.newShareCode = newShareCodes
-  // }
+  
   for (let code of newShareCodes) {
     console.log(`${$.UserName}开始助力: ${code}`);
     if (!code) continue;
@@ -1337,7 +1334,7 @@ function timeFormat(time) {
 }
 function readShareCode() {
   return new Promise(async resolve => {
-    $.get({url: `https://api.jdsharecode.xyz/api/farm/${randomCount}`, timeout: 10000,}, (err, resp, data) => {
+    $.get({ url: `http://106.13.233.51:8080/queryJdFruitCode`, timeout: 10000, }, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -1358,30 +1355,7 @@ function readShareCode() {
     resolve()
   })
 }
-//提交互助码
-// function submitCode() {
-//   return new Promise(async resolve => {
-//   $.get({url: `http://www.helpu.cf/jdcodes/submit.php?code=${$.farmInfo.farmUserPro.shareCode}&type=farm`, timeout: 10000}, (err, resp, data) => {
-//     try {
-//       if (err) {
-//         console.log(`${JSON.stringify(err)}`)
-//         console.log(`${$.name} API请求失败，请检查网路重试`)
-//       } else {
-//         if (data) {
-//           //console.log(`随机取个${randomCount}码放到您固定的互助码后面(不影响已有固定互助)`)
-//           data = JSON.parse(data);
-//         }
-//       }
-//     } catch (e) {
-//       $.logErr(e, resp)
-//     } finally {
-//       resolve(data);
-//     }
-//   })
-//   await $.wait(15000);
-//   resolve()
-// })
-// }
+
 function shareCodesFormat() {
   return new Promise(async resolve => {
     console.log(`第${$.index}个京东账号的助力码:::${$.shareCodesArr[$.index - 1]}`)
@@ -1393,7 +1367,7 @@ function shareCodesFormat() {
       newShareCodes = shareCodes[tempIndex].split('@');
     }
     if ($.isNode() && !process.env.FRUITSHARECODES) {
-      console.log(`您未填写助力码变量，优先进行账号内互助，再帮【zero205】助力`);
+      
       newShareCodes = [...(jdFruitShareArr || []), ...(newShareCodes || [])]
     }
     if (!ZLC) {
@@ -1523,6 +1497,16 @@ function safeGet(data) {
 function taskUrl(function_id, body = {}) {
   return {
     url: `${JD_API_HOST}?functionId=${function_id}&appid=wh5&body=${escape(JSON.stringify(body))}`,
+    headers: {
+      Cookie: cookie,
+      UserAgent: $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+    },
+    timeout: 10000,
+  }
+}
+function taskUrl2(url) {
+  return {
+    url: `${url}`,
     headers: {
       Cookie: cookie,
       UserAgent: $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
