@@ -24,7 +24,7 @@ if ($.isNode()) {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 !(async () => {
-  console.log(`\n【抢京豆脚本】优先账号内部互相助力，有剩余次数再助力【zero205】\n`)
+  console.log(`\n【抢京豆脚本】优先账号内部互相助力，已清空已发现的暗门，如有别的请自行修改\n`)
   await getAuthorShareCode();
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
@@ -70,7 +70,7 @@ if ($.isNode()) {
             break
         }
       }
-      console.log(`${$.UserName}账号内部互助已完成，尝试帮【zero205】助力`)
+      console.log(`${$.UserName}账号内部互助已完成`)
       for (let code of $.authorCode) {
         $.canHelp = true
         await doHelp(code.groupCode, code.shareCode, $.activityId)
@@ -79,7 +79,7 @@ if ($.isNode()) {
       }
     }
   } else {
-    console.log(`\n账号少于3个，不够成团，去助力【zero205】，感谢！\n`)
+    console.log(`\n账号少于3个，不够成团\n`)
     for (let j = 0; j < cookiesArr.length; j++) {
       if (cookiesArr[j]) {
         cookie = cookiesArr[j];
@@ -226,11 +226,11 @@ function getShareCode() {
 
 function getAuthorShareCode() {
   return new Promise(resolve => {
-    $.get({
-      url: "https://raw.fastgit.org/zero205/updateTeam/main/shareCodes/jd_updateBeanHome.json",
+   // $.get({
+     // url: "https://raw.fastgit.org/zero205/updateTeam/main/shareCodes/jd_updateBeanHome.json",
       headers: {
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
-      }
+     // }
     }, async (err, resp, data) => {
       try {
         if (err) {
