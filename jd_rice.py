@@ -6,7 +6,7 @@ const $ = new Env("京东饭粒");
 cron:
 46 9 * * * jd_fanli.py
 """
-const=("京豆饭粒");
+'Env("京豆饭粒");'
 
 import os
 import time
