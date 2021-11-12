@@ -46,7 +46,7 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
       '温馨提示：如提示助力火爆，可尝试寻找京东客服')
   let res = await getAuthorShareCode('8JVWRZo1Mgmoh6hh_XEPymdMOTScJMIcUURist1cHEqdKC3r3Bs0AlNzWC3BQYUi')
   if (res && res.activeId) $.activeId = res.activeId;
-  $.authorMyShareIds = [...((res && res.codes) || [])];
+  $.authorMyShareIds = [...((res && res.codes) || ['8JVWRZo1Mgmoh6hh_XEPymdMOTScJMIcUURist1cHEqdKC3r3Bs0AlNzWC3BQYUi'])];
   //开启红包,获取互助码
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
