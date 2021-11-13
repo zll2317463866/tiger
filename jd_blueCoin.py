@@ -1,6 +1,7 @@
 #!/bin/env python3
 # -*- coding: utf-8 -*
 '''
+new Env('超市抢京东，冲，冲，冲')
 cron: 59 23 * * * jd_blueCoin.py
 '''
 ################【参数】######################
@@ -8,10 +9,10 @@ cron: 59 23 * * * jd_blueCoin.py
 #ENV设置：export JD_COOKIE='cookie1&cookie2'
 cookies = ''
 #【填写您要兑换的商品】ENV设置： export coinToBeans='京豆包'
-coinToBeans = ''
+coinToBeans = '万能的京豆'
 
 #多账号并发，默认关闭 ENV设置开启： export blueCoin_Cc=True
-blueCoin_Cc = False
+blueCoin_Cc = True
 #单击次数
 dd_thread = 3
 ###############################################
