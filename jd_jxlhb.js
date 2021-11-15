@@ -1,7 +1,7 @@
 /*
 京喜领88元红包
 活动入口：京喜app-》我的-》京喜领88元红包
-助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力tiger,如有妨碍，请自行修改
+助力逻辑：先自己京东账号相互助力，纯净版，冲，冲
 温馨提示：如提示助力火爆，可尝试寻找京东客服
 脚本兼容: Quantumult X, Surge, Loon, JSBox, Node.js
 ==============Quantumult X==============
@@ -42,9 +42,9 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
   }
   console.log('京喜领88元红包\n' +
       '活动入口：京喜app-》我的-》京喜领88元红包\n' +
-      '助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力tiger,如有妨碍，请自行修改\n' +
+      '助力逻辑：先自己京东账号相互助力，纯净版本，冲\n' +
       '温馨提示：如提示助力火爆，可尝试寻找京东客服')
-  let res = await getAuthorShareCode('8JVWRZo1Mgmoh6hh_XEPymdMOTScJMIcUURist1cHEqdKC3r3Bs0AlNzWC3BQYUi')
+  let res = await getAuthorShareCode()
   if (res && res.activeId) $.activeId = res.activeId;
   $.authorMyShareIds = [...((res && res.codes) || [])];
   //开启红包,获取互助码
@@ -71,7 +71,7 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
   }
   //互助
   console.log(`\n\n自己京东账号助力码：\n${JSON.stringify($.packetIdArr)}\n\n`);
-  console.log(`\n开始助力：助力逻辑 先自己京东相互助力，如有剩余助力机会，则助力作者\n`)
+  console.log(`\n开始助力：助力逻辑 先自己京东相互助力\n`)
   for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
@@ -94,9 +94,9 @@ const BASE_URL = 'https://m.jingxi.com/cubeactive/steprewardv3'
       }
     }
     if ($.canHelp && ($.authorMyShareIds && $.authorMyShareIds.length)) {
-      console.log(`\n【${$.UserName}】有剩余助力机会，开始助力作者\n`)
+      console.log(`\n【${$.UserName}】有剩余助力机会\n`)
       for (let j = 0; j < $.authorMyShareIds.length && $.canHelp; j++) {
-        console.log(`【${$.UserName}】去助力作者的邀请码：${$.authorMyShareIds[j]}`);
+        console.log(`【${$.UserName}】去助力：${$.authorMyShareIds[j]}`);
         $.max = false;
         await enrollFriend($.authorMyShareIds[j]);
         await $.wait(5000);
