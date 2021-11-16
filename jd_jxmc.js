@@ -23,8 +23,6 @@ let cookiesArr = [],token = {},ua = '';
 $.appId = 10028;
 let activeid = 'null';
 $.inviteCodeList = [];
-$.inviteCodeList_rp = [];
-let flag_hb = true
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
         cookiesArr.push(jdCookieNode[item])
@@ -71,34 +69,7 @@ if ($.isNode()) {
         console.log('\n脚本早上9点到10点直接执行，才会执行账号内互助');
         return ;
     }
-    if (flag_hb) {
-        console.log('\n##################开始账号内互助(红包)#################\n');
-        await getShareCode('jxmc_hb.json')
-        $.inviteCodeList_rp = [...($.inviteCodeList_rp || []), ...($.shareCode || [])]
-        for (let j = 0; j < cookiesArr.length; j++) {
-            $.cookie = cookiesArr[j];
-            $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1]);
-            token = await getJxToken();
-            $.canHelp = true;
-            for (let k = 0; k < $.inviteCodeList_rp.length; k++) {
-                $.oneCodeInfo = $.inviteCodeList_rp[k];
-                activeid = $.oneCodeInfo.activeid;
-                if($.oneCodeInfo.use === $.UserName) continue;
-                if (!$.canHelp) break;
-                if($.oneCodeInfo.use === $.UserName){
-                    continue
-                }
-                console.log(`\n${$.UserName}去助力${$.oneCodeInfo.use},助力码：${$.oneCodeInfo.code}\n`);
-                let helpInfo = await takeRequest(`jxmc`,`operservice/InviteEnroll`,`&sharekey=${$.oneCodeInfo.code}`,`activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Csharekey%2Ctimestamp`,true);
-                // console.debug(helpInfo)
-                await $.wait(2000);
-            }
-        }
-    }
     console.log('\n##################开始账号内互助#################\n');
-    $.shareCode = undefined
-    await getShareCode('jxmc.json')
-    $.inviteCodeList = [...($.inviteCodeList || []), ...($.shareCode || [])]
     for (let j = 0; j < cookiesArr.length; j++) {
         $.cookie = cookiesArr[j];
         $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1]);
@@ -128,48 +99,7 @@ if ($.isNode()) {
         }
     }
 })().catch((e) => {$.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')}).finally(() => {$.done();})
-function getShareCode(name) {
-  return new Promise(resolve => {
-    $.get({
-      url: "https://raw.fastgit.org/zero205/updateTeam/main/shareCodes/"+name,
-      headers: {
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
-      }
-    }, async (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`);
-          console.log(`${$.name} API请求失败，请检查网路重试`);
-        } else {
-          console.log(`优先账号内部互助，有剩余助力次数再帮【zero205】助力`);
-          $.shareCode = JSON.parse(data);
-        }
-      } catch (e) {
-        $.logErr(e, resp)
-      } finally {
-        resolve();
-      }
-    })
-  })
-}
-async function get_rp(){
-    let rpInfo = await takeRequest(`jxmc`,`operservice/GetInviteStatus`,``,``,true);
-    if (rpInfo.ret === 0) {
-        if(rpInfo.data.sharekey){
-            console.log(`红包邀请码:${rpInfo.data.sharekey}`);
-            $.inviteCodeList_rp.push({'use':$.UserName,'code':rpInfo.data.sharekey,'max':false,'activeid':activeid});
-        }
-    } else if(rpInfo.ret === 2704){
-        console.log('红包今天领完了,跳过红包相关')
-        flag_hb = false
-    } else if(rpInfo.ret === 2706){
-        console.log('此帐号红包助力已满')
-    } else if(rpInfo.ret === 1016){
-        console.log('此帐号红包火爆')
-    } else{
-        console.log(`未知异常：${JSON.stringify(rpInfo)}\n`);
-    }
-}
+
 async function main() {
     ua = '';
     if(JXUserAgent){
@@ -221,9 +151,6 @@ async function main() {
     if(!petidList || petidList.length === 0){
         console.log(`账号内没有小鸡，暂停执行`);
         return ;
-    }
-    if (flag_hb) {
-      await get_rp()
     }
     $.inviteCodeList.push({'use':$.UserName,'code':homePageInfo.sharekey,'max':false,'activeid':activeid});
     if(JSON.stringify(visitBackInfo) !== '{}'){
@@ -626,7 +553,7 @@ async function takeRequest(type,functionId,info,stk='activeid%2Cactivekey%2Cchan
                 console.log(data);
                 $.logErr(e, resp)
             } finally {
-                if(functionId === 'operservice/Feed' || functionId === 'operservice/GetInviteStatus'){
+                if(functionId === 'operservice/Feed'){
                     resolve(data || {});
                 }else{
                     resolve(data.data || {});
