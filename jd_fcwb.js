@@ -1,4 +1,4 @@
-const $ = new Env('搞基大神-发财挖宝（助力&挖宝）');
+const $ = new Env('二改—发财挖宝（助力&自动挖宝）');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
