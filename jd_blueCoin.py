@@ -1,7 +1,7 @@
 #!/bin/env python3
 # -*- coding: utf-8 -*
 '''
-new Env('超市抢京东，冲，冲，冲')
+new Env('超市抢京豆-并发')
 cron: 59 23 * * * jd_blueCoin.py
 '''
 ################【参数】######################
