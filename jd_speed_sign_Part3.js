@@ -1,5 +1,5 @@
 /*
-cron "0 7 * * *" jd_speed_sign_Part3.js, tag:京东极速版任务3
+cron "0 7 * * *" jd_speed_sign_Part3.js, tag:京东极速版任务1
 */
  //详细说明参考 https://github.com/ccwav/QLScript2.
 const $ = new Env('京东极速版任务3');
@@ -57,6 +57,11 @@ const JD_API_HOST = 'https://api.m.jd.com/', actCode = 'visa-card-001';
       }
       await jdGlobal()
       await $.wait(10*1000)
+	  
+	  if (llAPIError){
+		console.log(`黑IP了，赶紧重新拨号换个IP吧`);
+		break;
+	  }
     }
   }
 })()
@@ -351,7 +356,7 @@ async function startItem(activeId, activeType) {
                   videoBrowsing = activeType === 1 ? 5 : 10
                 console.log(`【${taskCompletionProgress + 1}/${taskCompletionLimit}】浏览商品任务记录成功，等待${videoBrowsing}秒`)
                 await $.wait(videoBrowsing * 1000)
-				await $.wait(2000);
+				await $.wait(3000);
                 await endItem(data.data.uuid, activeType, activeId, activeType === 3 ? videoBrowsing : "")
 				await $.wait(1000);
               } else {
