@@ -1,5 +1,5 @@
 //48 9,22 * * * m_jd_sign.js
-const {Env} = require('./magic');
+const {Env} = require('./utils/magic');
 const $ = new Env('M京东汽车签到')
 $.logic = async function () {
     await signBeanIndex()
