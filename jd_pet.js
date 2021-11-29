@@ -8,7 +8,6 @@
 互助码shareCode请先手动运行脚本查看打印可看到
 一天只能帮助5个人。多出的助力码无效
 
-// zero205：已添加自己账号内部互助，有剩余助力次数再帮我助力
 
 =================================Quantumultx=========================
 [task_local]
@@ -31,12 +30,7 @@ let cookiesArr = [], cookie = '', jdPetShareArr = [], isBox = false, notify, new
 //助力好友分享码(最多5个,否则后面的助力失败),原因:京东农场每人每天只有四次助力机会
 //此此内容是IOS用户下载脚本到本地使用，填写互助码的地方，同一京东账号的好友互助码请使用@符号隔开。
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
-let shareCodes = [ // IOS本地脚本用户这个列表填入你要助力的好友的shareCode
-   //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
-  'MTAxODc2NTEzNTAwMDAwMDAwMjg3MDg2MA==@MTAxODc2NTEzMzAwMDAwMDAyNzUwMDA4MQ==@MTAxODc2NTEzMjAwMDAwMDAzMDI3MTMyOQ==@MTAxODc2NTEzNDAwMDAwMDAzMDI2MDI4MQ==@MTAxODcxOTI2NTAwMDAwMDAxOTQ3MjkzMw==@MTAxODc2NTEzMDAwMDAwMDAxMzgwNTcyNw==@MTAxODc2NTEzMzAwMDAwMDAxMzgwNDg3OQ==@MTE1NDAxNzcwMDAwMDAwMzUxNDMwMDc=@MTE1NDQ5MzYwMDAwMDAwMzUxNDMwMTE=@MTE1NDUwMTI0MDAwMDAwMDM2OTQ2Mjk1@MTAxODc2NTEzMjAwMDAwMDAyMDUxMDY2OQ==',
-  //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
-  'MTAxODc2NTEzMjAwMDAwMDAzMDI3MTMyOQ==@MTAxODcxOTI2NTAwMDAwMDAyNjA4ODQyMQ==@MTAxODc2NTEzOTAwMDAwMDAyNzE2MDY2NQ==@MTE1NDUyMjEwMDAwMDAwNDI0MDM2MDc=@MTAxODc2NTEzMjAwMDAwMDAwNDA5MzAzMw==@MTAxODc2NTEzMDAwMDAwMDAxMzgwNTcyNw==@MTAxODc2NTEzMzAwMDAwMDAxMzgwNDg3OQ==@MTE1NDAxNzcwMDAwMDAwMzUxNDMwMDc=@MTE1NDQ5MzYwMDAwMDAwMzUxNDMwMTE=@MTE1NDUwMTI0MDAwMDAwMDM2OTQ2Mjk1@MTAxODc2NTEzMjAwMDAwMDAyMDUxMDY2OQ==',
-]
+let shareCodes = [ ]
 const ZLC = !(process.env.JD_JOIN_ZLC && process.env.JD_JOIN_ZLC === 'false')
 let message = '', subTitle = '', option = {};
 let jdNotify = false;//是否关闭通知，false打开通知推送，true关闭通知推送
@@ -46,7 +40,7 @@ let randomCount = $.isNode() ? 20 : 5;
 $.newShareCode = [];
 !(async () => {
   if (!process.env.JD_JOIN_ZLC) {
-    console.log(`【注意】本脚本默认会给助力池进行助力！\n如需加入助力池请添加TG群：https://t.me/jd_zero_205\n如不加入助力池互助，可添加变量名称：JD_JOIN_ZLC，变量值：false\n`)
+    console.log(`【注意】本脚本无内置助力码，内部相互助力`)
   }
   await requireConfig();
   if (!cookiesArr[0]) {
