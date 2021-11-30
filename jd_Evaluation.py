@@ -10,8 +10,8 @@ new Env('京东全自动评价');
 
 ################【参数】######################
 # [填写您要批量评价的范围]  ENV设置： export Ev_Scope='1,2,4-5'
-#  目前只支持逗号(,)和减号(-)
-Ev_Scope = '1-100'
+#  目前只支持逗号(,)和减号(-)，默认自动评价前50个账号
+Ev_Scope = '1-50'
 
 # 晒单图片更换 ，默认两张裂图随机 ENV设置： export Ev_img='//img30.360buyimg.com/shaidan/······.jpg'
 Ev_img = ''
@@ -41,7 +41,7 @@ except Exception as e:
 
 pwd = os.path.dirname(os.path.abspath(__file__)) + os.sep
 
-print("#####【群友：右手余生 分享】#############")
+print("#####【感谢隔壁群友：右手余生 分享】#############")
 print("##########【参数设置】#################")
 print("---------【Ev_Scope】----------------")
 print("[填写您要批量评价的范围]  ENV设置： export Ev_Scope='1,3'")
