@@ -1,6 +1,10 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 '''
+
+安装此依赖
+docker exec -it QL bash -c "pip3 install jieba"
+
 项目名称: JD-Script / jd_Evaluation
 Author: qiu_lzsnmb
 功能：全自动完成评价+晒单，提高京享值，满足强迫症
