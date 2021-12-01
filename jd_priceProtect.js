@@ -1,4 +1,4 @@
-let common = require("./function/common");
+let common = require("./utils/common");
 let jsdom = require("jsdom");
 let $ = new common.env('京东保价');
 let min = 1,
