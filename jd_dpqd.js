@@ -1,11 +1,7 @@
 /*
-店铺签到，各类店铺签到，有新的店铺直接添加token即可
-搬运cui521大佬脚本，请勿外传！！！
 
-自带的Token List网址已不可用
-
-由Shy_yhS更新店铺数据，每天超过20间店铺会火爆
-更新日期:2021-10-25
+由https://github.com/JDWXX/jd_job.git 更新店铺数据，每天超过20间店铺会火爆
+更新日期:2021-12-03
 cron 0 0 * * * jd_qpqd_diy.js, tag=店铺签到diy
 */
 const $ = new Env('店铺签到');
@@ -24,25 +20,36 @@ let num=0
 let shopname=''
 
 const token=[
-    "8111EE06946DAB79472DFDF2A13C2DB9",//北大荒豆浆京东自营旗舰店
-    "129E19555A06044320581461FE09C896",//大华京东自营官方旗舰店
-    "9542085FFDB51476EE59D5A6502D67F0",//紫林京东自营旗舰店
-    "D73F254172D94BD4713F78BDBFB483E0",//者官方旗舰店
-    "4C5CFB00593CF8E59C5B26782A01D8E9",//嘉源汇成人用品专营店
-    "C661C7898402EC2B811DF2070E3A2822",//罗果数码专营店
-    "4AA8A680BEF1C01F7D6D4E1EE086D392",//无名
-    "AECD96F9A4B90B37F8D4C39B7B35974B",//康铭京东自营旗舰店
-    "60811408FD8183DE2176E5630BE1B8EA",//无名
-    "77ABD23B6CA4A4568BE6EA6CC4F03A51",//白水杜康官方旗舰店
-    "142FB06D1CD2463B04B23236A02D83F7",//怡思丁（ISDIN）京东自营旗舰店
-    "6426552A3974195FE2B28DF29128345F",//朗颜（Rownyeon）京东自营旗舰店
-    "9A42B3E0E6C8D997543E69D7BA9B4395",//风尚志旗舰店
-    "F6B96114B374349D9636E090B6746E6A",//么宁妃旗舰店
-    "99A7679D647198976CE683C110088927",//三人行大米京东自营旗舰店
-    "D2D82EDE361BF974045540EF46D50A22",//小鹿蓝蓝京东自营旗舰店
-    "B9293DFD9229B9611777274E36803D90",//稳健京东自营旗舰店
-    "8BF57ED55486BD4098A61C11F0B3FD14",//幸福草京东自营官方旗舰店
-    "817BBE94FCFD8CD970E9D68BEAA55D71",//西铁城创元专卖店
+  "46A656A5427BD312BDCABCB56C6D00AE",//北大荒豆浆京东自营旗舰店
+  "CBCE98732A9A051E4BC238EEE485B570",//5-30天65豆 100+50份 大华京东自营官方旗舰店
+  "D35A8990A9E30D2857E93AF9BF2A1291",// 5-30天65豆 100+50份 紫林京东自营旗舰店
+  "D0AD519DBC35A253CEC052FD041F2EFD",//朗颜（Rownyeon）京东自营旗舰店
+  "77A6C7B5C2BC9175521931ADE8E3B2E0",//三人行大米京东自营旗舰店
+  "888BA24E643DB95D83242AD122237CA9",//稳健京东自营旗舰店
+  "9E6034F4A60088A97427701990163E27",//西铁城创元专卖店
+  "9E6034F4A60088A97427701990163E27",//妇炎洁京东自营旗舰店
+  "59C083DEF419E3341EAF6453D23F8F65",//辉柏嘉京东自营官方旗舰店
+  "44F9ED783B611D7AB596690F5F6CA2C2",//双杰京东自营旗舰店
+
+  // 20211202
+  "A2DBF6F052891BF5A5A304E1F5E0FDBD",//天章京东自营官方旗舰店 3天50豆 25000份
+  "53378560A6BC7E91EB143DE59183F67F",//沙驰官方旗舰店 3天50豆 5790份
+  "1815C0F46916BD7AC0DC710BFBF84424",//雷瓦官方旗舰店 3天30豆 500份
+  "9A80E139DC411B3CB72EB5E27FC29632",//友臣旗舰店 4天1亓鸿包 200份 https://u.jd.com/nCytKNa
+  "C15FDE1894B91E915CE228390339C91A",//飞智京东自营旗舰店 7天5亓鸿包 14天5亓鸿包 100份  https://u.jd.com/nLytLZa
+  "02CBED5E0391FDD38BA71F813C50DF2D",//美奥口腔旗舰店 7天100豆 200份 https://u.jd.com/ndytMuZ
+  "91CC3F9699320158FAC003F71F4A6C03",//福临门旗舰店 7天50豆 100份 https://u.jd.com/ntyt2Qz
+  "18EF5FBC139F9BC5B8DE703E9AB1ABDB",//妮飘纸品旗舰店 2-7天45豆 300份 https://u.jd.com/ndytC9H
+  "2A8794EC8DA4659DDDA0DF0E1A2AF4AF",//catalo海外旗舰店  3-30天180豆 10份   https://u.jd.com/nLytQmb
+
+  // 20211203
+  "25F1232C9097D0C54386E2DC5B42A4B0",// 顶固五金旗舰店   3天100京豆 2000份 https://u.jd.com/nIPfKam
+  "011BAF6E366D356E7694B0999CE3DE03",// LG展硕专卖店   7天2亓虹包 500份 https://u.jd.com/nCPjRyp
+  "0BC8DD418E64D11837AA95714040E5A3",// THREE SEVEN777旗舰店   10天80京豆 500份 https://u.jd.com/nIPjhgc
+  "C19201D1BBFABECF9184E970DF985F62",// 屹林宏业旗舰店  10天50京豆 1000份 https://u.jd.com/nMPjeQX
+  "467FF39E95F017E61AD68BB11859C5B2",// 费雪水杯旗舰店   3天20京豆 https://u.jd.com/nMPjhEX
+  "11CD3D32563C80BDE473B2C732F093E3",// 28天100京豆
+
 ]
 //IOS等用户直接用NobyDa的jd cookie
 
@@ -76,7 +83,12 @@ if ($.isNode()) {
 	
 	$.TokenLists.push(...$.TokenList,...$.innerTokenList);
 
-	
+
+  console.log(`********更新库【https://github.com/JDWXX/jd_job.git】*******`);
+  console.log(`********新活动请在GitHub提 issue ***********************************`);
+  console.log(`********本次更新时间：【2021-12-03】 *************************`);
+  console.log(`********签到奖励店铺群友贡献列表*******************************`);
+  console.log(`********星晴***********************************************`);
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
