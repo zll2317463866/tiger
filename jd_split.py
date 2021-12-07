@@ -1,7 +1,6 @@
 '''
 cron: 5 16 * * *
 new Env('金榜年终奖');
-入口: 18:/#L0UqX8PSJNouJN%ヤ﹎壹起祛【京東】，复制全部内容，打开京东App，即可为我助力，领大额红包！一起来参与领1212金榜年终奖吧！
 功能：完成任务，互助, 开红包
 环境变量 jd_golden_yearendBonus_runtask，是否做任务
 export jd_golden_yearendBonus_runtask="yes"       # 是否做任务，yes则做，no则不做任务，直接助力开红包,默认yes
@@ -287,29 +286,29 @@ def splitHongbao_getHomeData_helpcode(cookie,inviteCode):
     body='functionId=harmony_collectScore&body={"appId":"1EFVXxg","taskToken":"'+inviteCode+'","taskId":6,"actionType":0}&client=wh5&clientVersion=1.0.0'
     res=taskPostUrl(body, cookie)
 
-# 账号1助力作者
-def author_helpcode(cookie):
-    url_list = [
-    ]
-    for e,url in enumerate(url_list):
-        try:
-            response = requests.get(url,timeout=10).json()
-            break
-        except:
-            if e >= (len(url_list)-1):
-                print('获取助力码，请检查网络连接...')   
-    helpcode_list=response['jd_golden_yearendBonus'] 
-    for helpcode_ssssss in helpcode_list:
-        try:
-            body='functionId=splitHongbao_getHomeData&body={"appId":"1EFVXxg","taskToken":"'+helpcode_ssssss+'"}&client=wh5&clientVersion=1.0.0'
-            res=taskPostUrl(body, cookie)
-            msg(f"账号1助力作者 {helpcode_ssssss}")
-            msg(res['data'].get('bizMsg',None))
-        except Exception as e:
-            msg(f"账号1助力作者 {helpcode_ssssss}")
-            msg("失败") 
-        body='functionId=harmony_collectScore&body={"appId":"1EFVXxg","taskToken":"'+helpcode_ssssss+'","taskId":6,"actionType":0}&client=wh5&clientVersion=1.0.0'
-        res=taskPostUrl(body, cookie)
+# # 账号1助力作者
+# def author_helpcode(cookie):
+#     url_list = [
+#     ]
+#     for e,url in enumerate(url_list):
+#         try:
+#             response = requests.get(url,timeout=10).json()
+#             break
+#         except:
+#             if e >= (len(url_list)-1):
+#                 print('获取助力码，请检查网络连接...')   
+#     helpcode_list=response['jd_golden_yearendBonus'] 
+#     for helpcode_ssssss in helpcode_list:
+#         try:
+#             body='functionId=splitHongbao_getHomeData&body={"appId":"1EFVXxg","taskToken":"'+helpcode_ssssss+'"}&client=wh5&clientVersion=1.0.0'
+#             res=taskPostUrl(body, cookie)
+#             msg(f"账号1助力作者 {helpcode_ssssss}")
+#             msg(res['data'].get('bizMsg',None))
+#         except Exception as e:
+#             msg(f"账号1助力作者 {helpcode_ssssss}")
+#             msg("失败") 
+#         body='functionId=harmony_collectScore&body={"appId":"1EFVXxg","taskToken":"'+helpcode_ssssss+'","taskId":6,"actionType":0}&client=wh5&clientVersion=1.0.0'
+#         res=taskPostUrl(body, cookie)
 
 
 def main():
