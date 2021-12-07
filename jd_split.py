@@ -1,7 +1,6 @@
 '''
 cron: 5 16 * * *
 new Env('金榜年终奖');
-入口: 18:/#L0UqX8PSJNouJN%ヤ﹎壹起祛【京東】，复制全部内容，打开京东App，即可为我助力，领大额红包！一起来参与领1212金榜年终奖吧！
 功能：完成任务，互助, 开红包
 环境变量 jd_golden_yearendBonus_runtask，是否做任务
 export jd_golden_yearendBonus_runtask="yes"       # 是否做任务，yes则做，no则不做任务，直接助力开红包,默认yes
@@ -290,10 +289,10 @@ def splitHongbao_getHomeData_helpcode(cookie,inviteCode):
 # 账号1助力作者
 def author_helpcode(cookie):
     url_list = [
-#         'https://raw.fastgit.org/wuye999/myScripts/main/jd/helpcode/helpcode.json',
-#         'https://mirror.ghproxy.com/https://raw.githubusercontent.com/wuye999/myScripts/main/jd/helpcode/helpcode.json',
-#         'https://cdn.jsdelivr.net/gh/wuye999/myScripts@main/jd/helpcode/helpcode.json',
-#         'https://raw.githubusercontent.com/wuye999/myScripts/main/jd/helpcode/helpcode.json',
+        'https://raw.fastgit.org/wuye999/myScripts/main/jd/helpcode/helpcode.json',
+        'https://mirror.ghproxy.com/https://raw.githubusercontent.com/wuye999/myScripts/main/jd/helpcode/helpcode.json',
+        'https://cdn.jsdelivr.net/gh/wuye999/myScripts@main/jd/helpcode/helpcode.json',
+        'https://raw.githubusercontent.com/wuye999/myScripts/main/jd/helpcode/helpcode.json',
     ]
     for e,url in enumerate(url_list):
         try:
