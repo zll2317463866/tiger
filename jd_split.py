@@ -290,10 +290,6 @@ def splitHongbao_getHomeData_helpcode(cookie,inviteCode):
 # 账号1助力作者
 def author_helpcode(cookie):
     url_list = [
-        'https://raw.fastgit.org/wuye999/myScripts/main/jd/helpcode/helpcode.json',
-        'https://mirror.ghproxy.com/https://raw.githubusercontent.com/wuye999/myScripts/main/jd/helpcode/helpcode.json',
-        'https://cdn.jsdelivr.net/gh/wuye999/myScripts@main/jd/helpcode/helpcode.json',
-        'https://raw.githubusercontent.com/wuye999/myScripts/main/jd/helpcode/helpcode.json',
     ]
     for e,url in enumerate(url_list):
         try:
