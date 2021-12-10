@@ -9,8 +9,8 @@ npm i png-js 或者 npm i png-js -S
 修改域名 https://jdjoy.jd.com 可以改成ip https://49.7.27.236
 */
 
-const validator = require('./utils/JDJRValidator_Pure.js');
-const Faker=require('./utils/sign_graphics_validate.js') 
+const validator = require('./utils/JDJRValidator_Pure_Smiek.js');
+const Faker=require('./utils/sign_graphics_validate.js')
 
 const $ = new Env('京东签到图形验证');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -87,12 +87,12 @@ const turnTableId = [
   }
   await showMsg();
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-  })
-  .finally(() => {
-    $.done();
-  })
+    .catch((e) => {
+      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+    })
+    .finally(() => {
+      $.done();
+    })
 
 async function showMsg() {
   $.msg($.name, `【签到数量】:  ${turnTableId.length}个\n` + subTitle + message);
@@ -109,7 +109,7 @@ async function signRun() {
     }else{
       errorNum++;
     }
-    await $.wait(parseInt(Math.random() * 5000 + 10000, 10))
+    await $.wait(1000)
   }
 }
 
@@ -178,25 +178,26 @@ function Sign(i) {
           console.log(`\n${turnTableId[i].name} 签到: API查询请求失败 ‼️‼️`)
           throw new Error(err);
         } else {
-          let res = $.toObj(data,data)
-          if (typeof res === 'object') {
-            if (res.success && res.data) {
-              let resData = res.data
-              if (Number(resData.jdBeanQuantity) > 0) beanNum += Number(resData.jdBeanQuantity)
+          if (data) {
+            // console.log(data)
+            data = JSON.parse(data);
+            if (data.success && data.data) {
+              data = data.data
+              if (Number(data.jdBeanQuantity) > 0) beanNum += Number(data.jdBeanQuantity)
               signFlag = true;
-              console.log(`${turnTableId[i].name} 签到成功:获得 ${Number(resData.jdBeanQuantity)}京豆`)
+              console.log(`${turnTableId[i].name} 签到成功:获得 ${Number(data.jdBeanQuantity)}京豆`)
             } else {
-              if (res.errorMessage) {
-                if(res.errorMessage.indexOf('已签到') > -1 || res.errorMessage.indexOf('今天已经签到') > -1){
+              if (data.errorMessage) {
+                if(data.errorMessage.indexOf('已签到') > -1 || data.errorMessage.indexOf('今天已经签到') > -1){
                   signFlag = true;
                 }
-                console.log(`${turnTableId[i].name} ${res.errorMessage}`)
+                console.log(`${turnTableId[i].name} ${data.errorMessage}`)
               } else {
-                console.log(`${turnTableId[i].name} ${data}`)
+                console.log(`${turnTableId[i].name} ${JSON.stringify(data)}`)
               }
             }
           } else {
-            console.log(`${turnTableId[i].name} ${data}`)
+            console.log(`京豆api返回数据为空，请检查自身原因`)
           }
         }
       } catch (e) {
