@@ -1,5 +1,12 @@
 /*
-
+================================================================================
+魔改自 https://github.com/shufflewzc/faker2/blob/main/jdCookie.js
+修改内容：与task_before.sh配合，由task_before.sh设置要设置要做互助的活动的 ShareCodeConfigName 和 ShareCodeEnvName 环境变量，
+        然后在这里实际解析/ql/log/.ShareCode中该活动对应的配置信息（由code.sh生成和维护），注入到nodejs的环境变量中
+修改原因：原先的task_before.sh直接将互助信息注入到shell的env中，在ck超过45以上时，互助码环境变量过大会导致调用一些系统命令
+        （如date/cat）时报 Argument list too long，而在node中修改环境变量不会受这个限制，也不会影响外部shell环境，确保脚本可以正常运行
+魔改作者：风之凌殇
+================================================================================
 
 此文件为Node.js专用。其他用户请忽略
  */
@@ -84,12 +91,43 @@ function SetShareCodesEnv(nameConfig = "", envName = "") {
     console.info(`【tiger仓库】 友情提示：为避免ck超过45以上时，互助码环境变量过大而导致调用一些系统命令（如date/cat）时报 Argument list too long，改为在nodejs中设置 ${nameConfig} 的 互助码环境变量 ${envName}，共计 ${totalCodeCount} 组互助码，总大小为 ${shareCodesStr.length}`)
 }
 
+// 判断当前活动脚本是否在互助脚本列表中
+function IsShareJsFile() {
+    // 尝试获取在task_before.sh中设置的 互助活动的脚本文件名的关键部分 列表
+    let rawJsNameList = process.env.ShareCodeJSNameList
+    if (!rawJsNameList) {
+        return false
+    }
+
+    // 转换为list
+    let jsNameList = process.env.ShareCodeJSNameList.split(" ")
+
+    // 判断当前
+    let currentActivityScriptFileName = GetCurrentActivityScriptFileName()
+
+    let isShareJsFile = false
+    for (let idx = 0; idx < jsNameList.length; idx++) {
+        if (currentActivityScriptFileName.includes(jsNameList[idx])) {
+            isShareJsFile = true
+            break
+        }
+    }
+
+    return isShareJsFile
+}
+
+// 获取当前活动脚本的文件名
+function GetCurrentActivityScriptFileName() {
+    const path = require('path')
+    return path.basename(process.argv[1])
+}
+
 // 若在task_before.sh 中设置了要设置互助码环境变量的活动名称和环境变量名称信息，则在nodejs中处理，供活动使用
 let nameConfig = process.env.ShareCodeConfigName
 let envName = process.env.ShareCodeEnvName
 if (nameConfig && envName) {
     SetShareCodesEnv(nameConfig, envName)
-} else {
-    console.debug(`【tiger仓库】 友情提示：当前未设置 ShareCodeConfigName 或 ShareCodeEnvName 环境变量，将不会尝试在nodejs中生成互助码的环境变量。ps: 两个值目前分别为 ${nameConfig} ${envName}`)
-    console.debug(`如果当前活动并没有互助内容，请无视上面这句话`)
+} else if (IsShareJsFile()) {
+    console.debug(`【tiger仓库】 友情提示：当前脚本为 ${GetCurrentActivityScriptFileName()}，包含在互助脚本列表中，但未设置 ShareCodeConfigName 或 ShareCodeEnvName 环境变量，将不会尝试在nodejs中生成互助码的环境变量。ps: 两个值目前分别为 ${nameConfig} ${envName}`)
+    console.debug(`看不惯上面的署名，就自己把这行注释掉<_< 或者不用`)
 }
