@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 # python版本 >=3.8
 #小米账号，密码拉到内容最下面修改 
+'Env = new Env("小米运动") '
 import requests,time,re,json,random
  
 now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
