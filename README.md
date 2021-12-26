@@ -1,6 +1,6 @@
-不知道哪些狗，原本的群被干没了，新群号：832563280
-tg备用联系方式：
-https://t.me/+pellEgrbUethMGZl
+不知道哪些狗，原本的群被干没了<br>新群号：832563280<br>
+<B>tg备用联系方式：
+https://t.me/+pellEgrbUethMGZl</B>
 
 本仓库不是纯净仓库，没有绝对的纯净，大多数肉眼可见的已去后门，介意的请勿使用与fork！！！
 
@@ -17,18 +17,15 @@ https://t.me/+pellEgrbUethMGZl
 
 便宜服务器看下方，按需求买吧
 
-阿里云服务器
+<B>阿里云服务器</B>
 
 https://www.aliyun.com/activity/ambassador/share-gift/goods?taskCode=xfyh2107&recordId=784554&userCode=sdnzf2bx
 
-腾讯云服务器
+<B>腾讯云服务器</B>
 
 https://curl.qcloud.com/IUQvwMbi
 
 
-程序测试（可以直接上车版本）
-
-http://193.112.242.211/XnlBVg/u1vws4
 
                                     维护不易，支持的铁子赏个水钱也是莫大的支持！！！
  ![54__6fec1201ee853353e7399ac5d2597c9d_90dd81835322631168c8bc8fb7111707](https://user-images.githubusercontent.com/83000809/126744495-21a4d77f-8a0d-4483-96a4-100c9dccdae2.png)
