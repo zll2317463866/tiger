@@ -1,13 +1,15 @@
 /*
 https://lzkj-isv.isvjcloud.com/wxgame/activity/8530275?activityId=
+
+JD_CART_REMOVESIZE || 20; // 运行一次取消多全部已关注的商品。数字0表示不取关任何商品
+JD_CART_REMOVEALL || true;    //是否清空，如果为false，则上面设置了多少就只删除多少条
+
 */
 const $ = new Env('加购物车抽奖');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
-let cookiesArr = [], cookie = '', message = '';
-let activityIdList = [
-
-]
+let cookiesArr = [], cookie = '', message = '' ,isPush = false;
+let activityIdList = ['5e733f46fd1b4d7db9ee3fbe345542ef', '0d609439062847e8a7b79db2968ba9d5', 'cb2f397a60994ae5b6f05913a3fd6384', '7ba1c4420f094931a90508bda10d92b1', '21a824f2b2c149528667179ed08a334a', 'ba0a7dcabdab4ae2af6aa3912c8f3f12', '5113f35b6f2a4c08bd413eb8573ebead', '1900f76d7d37467ca2eaf17992e67e57', '4b83932e9860452f8d102c3dae21a8ea', '49f8d4ba5be245bfa808ec98c0b9c95b', '29432360178c48bda065f6769e5ec1f4', 'aabfd610b86b482e81a513cb36d72af3', 'f728e93a6d694096845e80e6c537f852', 'c0c2a97214c7468c936220d01d74e556', 'de50659b20bc4dfe957d473ce799f22c', 'a9635959cc8a4672bd5ae5e4facf2194', '199c985626ff4cd2b8095e73376485ac', '82b2e9dd9e8f405c8c7b2cb4d6c412a9', '1b29dceb483541f68ce56c0c24aef172']
 let lz_cookie = {}
 
 if (process.env.ACTIVITY_ID && process.env.ACTIVITY_ID != "") {
@@ -28,6 +30,7 @@ if ($.isNode()) {
     cookiesArr.reverse();
     cookiesArr = cookiesArr.filter(item => !!item);
 }
+let doPush = process.env.DoPush || false; // 设置为 false 每次推送, true 跑完了推送
 let removeSize = process.env.JD_CART_REMOVESIZE || 20; // 运行一次取消多全部已关注的商品。数字0表示不取关任何商品
 let isRemoveAll = process.env.JD_CART_REMOVEALL || true;    //是否清空，如果为false，则上面设置了多少就只删除多少条
 $.keywords = process.env.JD_CART_KEYWORDS || []
@@ -37,7 +40,7 @@ $.keywordsNum = 0;
         $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
         return;
     }
-    activityIdList = await getActivityIdList('https://raw.githubusercontent.com/FKPYW/dongge/master/code/wxCollectionActivity.json')
+    // activityIdList = await getActivityIdList('https://raw.githubusercontent.com/FKPYW/dongge/master/code/wxCollectionActivity.json')
     for(let a in activityIdList){
         activityId = activityIdList[a];
         console.log("开起第 "+ a +" 个活动，活动id："+activityId)
@@ -60,7 +63,7 @@ $.keywordsNum = 0;
                     continue
                 }
                 authorCodeList = [
-                    'b5d9535918264a4f92fff9d314d7db81',
+                    '',
                 ]
                 $.bean = 0;
                 $.ADID = getUUID('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', 1);
@@ -72,25 +75,25 @@ $.keywordsNum = 0;
                 $.drawInfoName = false
                 $.getPrize = null;
                 await addCart();
-                if($.drawInfoName === false || $.getPrize === null){
-                    break
-                } else if($.getPrize != null && !$.getPrize.includes("京豆")){
-                    break
-                }
-                await $.wait(3000)
-                await requireConfig();
-                do {
-                    await getCart_xh();
-                    $.keywordsNum = 0
-                    if($.beforeRemove !== "0"){
-                        await cartFilter_xh(venderCart);
-                        if(parseInt($.beforeRemove) !== $.keywordsNum) await removeCart();
-                        else {
-                            console.log('由于购物车内的商品均包含关键字，本次执行将不删除购物车数据')
-                            break;
-                        }
-                    } else break;
-                } while(isRemoveAll && $.keywordsNum !== $.beforeRemove)
+                // if($.drawInfoName === false || $.getPrize === null){
+                //     break
+                // } else if($.getPrize != null && !$.getPrize.includes("京豆")){
+                //     break
+                // }
+                // await $.wait(3000)
+                // await requireConfig();
+                // do {
+                //     await getCart_xh();
+                //     $.keywordsNum = 0
+                //     if($.beforeRemove !== "0"){
+                //         await cartFilter_xh(venderCart);
+                //         if(parseInt($.beforeRemove) !== $.keywordsNum) await removeCart();
+                //         else {
+                //             console.log('由于购物车内的商品均包含关键字，本次执行将不删除购物车数据')
+                //             break;
+                //         }
+                //     } else break;
+                // } while(isRemoveAll && $.keywordsNum !== $.beforeRemove)
                 if ($.bean > 0) {
                     message += `\n【京东账号${$.index}】${$.nickName || $.UserName} \n       └ 获得 ${$.bean} 京豆。`
                 }
@@ -183,7 +186,13 @@ function task(function_id, body, isCommon = 0) {
                                 case 'getPrize':
                                     console.log(data.data.name)
                                     $.getPrize = data.data.name;
-                                    await notify.sendNotify($.name, data.data.name, '', `\n`);
+                                    if (doPush === true) {
+                                        if (data.data.name) {
+                                            message += data.data.name + " "
+                                        }
+                                    } else {
+                                        // await notify.sendNotify($.name, data.data.name, '', `\n`);
+                                    }
                                     break
                                 default:
                                     $.log(JSON.stringify(data))
@@ -191,7 +200,7 @@ function task(function_id, body, isCommon = 0) {
                             }
                         }
                     } else {
-                        $.log("京东没有返回数据")
+                        // $.log("京东没有返回数据")
                     }
                 }
             } catch (error) {
