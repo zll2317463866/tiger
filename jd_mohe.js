@@ -76,27 +76,6 @@ $.shareId = [];
         if ($.isNode()) await notify.sendNotify($.name, allMessage);
         $.msg($.name, '', allMessage, {"open-url": "https://blindbox5g.jd.com"})
     }
-
-    $.shareId = [...($.shareId || [])];
-    await $.wait(500)
-    for (let v = 0; v < cookiesArr.length; v++) {
-        cookie = cookiesArr[v];
-        $.index = v + 1;
-        $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
-    console.log(`\n\n自己账号内部互助`);
-    for (let item of $.shareId) {
-            console.log(`账号 ${$.index} ${$.UserName} 开始给 ${item}进行助力`)
-            const res = await addShare(item);
-            if (res && res['code'] === 2005) {
-                console.log(`次数已用完，跳出助力`)
-                break
-            } else if (res && res['code'] === 1002) {
-                console.log(`账号火爆，跳出助力`)
-                break
-			}
-            await $.wait(2000)
-        }
-    }
 })()
     .catch((e) => {
         $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
@@ -127,30 +106,6 @@ async function task0() {
             }
         }
     }
-}
-function addShare(shareId) {
-    return new Promise((resolve) => {
-        const body = {"shareId":shareId,"apiMapping":"/active/addShare"}
-        $.post(taskurl(body), (err, resp, data) => {
-            try {
-                if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`${$.name} API请求失败，请检查网路重试`)
-                } else {
-                    data = JSON.parse(data);
-                    if (data['code'] === 200) {
-                        console.log(`助力好友【${data.data}】成功\n`);
-                    } else {
-                        console.log(`助力失败：${data.msg}`);
-                    }
-                }
-            } catch (e) {
-                $.logErr(e, resp);
-            } finally {
-                resolve(data);
-            }
-        })
-    })
 }
 function conf() {
     return new Promise((resolve) => {
@@ -256,7 +211,7 @@ async function taskList() {
                         console.log('\n\n----taskList的任务全部做完了---\n\n')
                         console.log(`分享好友助力 ${task5.finishNum}/${task5.totalNum}\n\n`)
                     } else {
-                        if ($.taskList_limit >= 15){
+                        if ($.taskList_limit >= 10){
                             console.log('触发死循环保护,结束')
                         } else {
                             console.log(`请继续等待,正在做任务,不要退出哦`)
