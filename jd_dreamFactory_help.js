@@ -42,7 +42,12 @@ const randomCount = $.isNode() ? 20 : 5;
 let tuanActiveId = ``, hasSend = false;
 const jxOpenUrl = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://wqsd.jd.com/pingou/dream_factory/index.html%22%20%7D`;
 let cookiesArr = [], cookie = '', message = '', allMessage = '', jdDreamFactoryShareArr = [];
-const newShareCodes = [];
+const newShareCodes = [
+  'urGPT1c0ITHN7W2XFqSKTg==',
+  'XGv-W12NaJeargxyJ9M5Rg==',
+  'Q2qrDiqp70N5yic3BGvcOQ==',
+  'SgVsBMPJ0CDXKbbPSoF3xg=='
+];
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 $.tuanIds = [];
 $.appId = 10001;
@@ -97,7 +102,7 @@ if ($.isNode()) {
       $.index = j + 1;
 	  console.log(`【京东账号${$.index}】${$.nickName || $.UserName}:\n`);
       await helpFriends();
-	  await $.wait(3000);
+	  await $.wait(4000);
     }
   }
   if ($.isNode() && allMessage) {
