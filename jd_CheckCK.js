@@ -9,10 +9,11 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const got = require('got');
 const {
     getEnvs,
+	getEnvById,
     DisableCk,
     EnableCk,
     getstatus
-} = require('./utils/ql.js');
+} = require('./ql');
 const api = got.extend({
         retry: {
             limit: 0
@@ -116,12 +117,12 @@ if ($.isNode() && process.env.CHECKCK_CKNOWARNERROR) {
 
 if ($.isNode() && process.env.CHECKCK_ALLNOTIFY) {
 
-    var strTempNotify = process.env.CHECKCK_ALLNOTIFY ? process.env.CHECKCK_ALLNOTIFY.split('&') : [];
-    if (strTempNotify.length > 0) {
+    strAllNotify = process.env.CHECKCK_ALLNOTIFY;
+/*     if (strTempNotify.length > 0) {
         for (var TempNotifyl in strTempNotify) {
             strAllNotify += strTempNotify[TempNotifyl] + '\n';
         }
-    }
+    } */
     console.log(`检测到设定了温馨提示,将在推送信息中置顶显示...`);
     strAllNotify = `\n【✨✨✨✨温馨提示✨✨✨✨】\n` + strAllNotify;
     console.log(strAllNotify);
@@ -138,7 +139,7 @@ if ($.isNode() && process.env.CHECKCK_ALLNOTIFY) {
 
     for (let i = 0; i < envs.length; i++) {
         if (envs[i].value) {
-            cookie = envs[i].value;
+            cookie = await getEnvById(envs[i]._id);			
             $.UserName = (cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
             $.UserName2 = decodeURIComponent($.UserName);
             $.index = i + 1;
