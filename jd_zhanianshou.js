@@ -1,14 +1,7 @@
-/*
-
-
-=================================Quantumultx=========================
-[task_local]
-#城城领现金
-0 0-23/5 * * * jd_zhanianshou.js, tag=城城领现金, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
-
-
- */
-const $ = new Env('炸年兽');
+//0 * * * * 炸年兽 自动入会、签到、任务、升级、开宝箱、捡金币
+//半残品随便跑跑 
+// 学习交流 
+const $ = new Env('搞基大神-炸年兽');
 
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 
