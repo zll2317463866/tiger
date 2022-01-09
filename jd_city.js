@@ -13,9 +13,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //自动抽奖 ，环境变量  JD_CITY_EXCHANGE
 let exchangeFlag = $.getdata('JD_CITY_EXCHANGE') || "false";//是否开启自动抽奖，建议活动快结束开启，默认关闭
 exchangeFlag = $.isNode() ? (process.env.JD_CITY_EXCHANGE ? process.env.JD_CITY_EXCHANGE : `${exchangeFlag}`) : ($.getdata('JD_CITY_EXCHANGE') ? $.getdata('JD_CITY_EXCHANGE') : `${exchangeFlag}`);
-// 优先助力[助力池]
-let helpShareFlag = "false";//是否优先助力[助力池]，默认是
-helpShareFlag = $.isNode() ? (process.env.JD_CITY_HELPSHARE ? process.env.JD_CITY_HELPSHARE : `${helpShareFlag}`) : ($.getdata('JD_CITY_HELPSHARE') ? $.getdata('JD_CITY_HELPSHARE') : `${helpShareFlag}`);
+
 
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
@@ -29,7 +27,7 @@ if ($.isNode()) {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
-let inviteCodes = ['4e_-XaQLb2VAYF6ISpeJ5uS0','-ryUXKkMNDFCN0GSSNnHo95ETK2dCBm_','-ryUX6xYNWVHY0PBH9zC_zh6Vklc2Tca','-ryUXf5YM2dFZ0PNSdOWoX0yOa5Pm_-w']
+let inviteCodes = ['ryUXKULN2FHZxXMHtvD9FPaUUY_XeDG']
 $.shareCodesArr = [];
 
 !(async () => {
@@ -39,9 +37,9 @@ $.shareCodesArr = [];
   }
   // await requireConfig();
   if(helpShareFlag+"" == "true"){
-    console.log('脚本优先助力[助力池] 如需开启优先助力[内部账号]，请设置环境变量  JD_CITY_HELPSHARE 为false\n')
+    console.log('冲就完事了\n')
   }else{
-    console.log('脚本优先助力[内部账号] 如需开启优先助力[助力池]，请设置环境变量  JD_CITY_HELPSHARE 为true\n')
+    console.log('冲就完事了\n')
   }
   if (exchangeFlag+"" == "true") {
     console.log(`脚本自动抽奖`)
