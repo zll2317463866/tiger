@@ -14,7 +14,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let exchangeFlag = $.getdata('JD_CITY_EXCHANGE') || "false";//是否开启自动抽奖，建议活动快结束开启，默认关闭
 exchangeFlag = $.isNode() ? (process.env.JD_CITY_EXCHANGE ? process.env.JD_CITY_EXCHANGE : `${exchangeFlag}`) : ($.getdata('JD_CITY_EXCHANGE') ? $.getdata('JD_CITY_EXCHANGE') : `${exchangeFlag}`);
 // 优先助力[助力池]
-let helpShareFlag = "true";//是否优先助力[助力池]，默认否
+let helpShareFlag = "false";//是否优先助力[助力池]，默认否
 helpShareFlag = $.isNode() ? (process.env.JD_CITY_HELPSHARE ? process.env.JD_CITY_HELPSHARE : `${helpShareFlag}`) : ($.getdata('JD_CITY_HELPSHARE') ? $.getdata('JD_CITY_HELPSHARE') : `${helpShareFlag}`);
 
 //IOS等用户直接用NobyDa的jd cookie
@@ -30,7 +30,7 @@ if ($.isNode()) {
 }
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 let inviteCodes = [
-  '-ryUXKULN2FHZxXMHtvD9FPaUUY_XeDG',
+  '-ryUXKULN2FHZxXMHtvD9FPaUUY_XeDG','-ryUX_lYb2FCZkTBGI3H9ffO4fnlyRuK',
 ]
 $.shareCodesArr = [];
 
