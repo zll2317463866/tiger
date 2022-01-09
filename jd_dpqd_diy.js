@@ -3,14 +3,14 @@
 ============Quantumultx===============
 [task_local]
 #店铺签到
-15 2,14 * * * https://raw.githubusercontent.com/KingRan/JDJB/main/jd_shop_sign.js, tag=店铺签到, enabled=true
+15 2,14 * * * https://raw.githubusercontent.com/444444/JDJB/main/jd_shop_sign.js, tag=店铺签到, enabled=true
 ===========Loon============
 [Script]
-cron "15 2,14 * * *" script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_shop_sign.js,tag=店铺签到
+cron "15 2,14 * * *" script-path=https://raw.githubusercontent.com/444444/JDJB/main/jd_shop_sign.js,tag=店铺签到
 ============Surge=============
-店铺签到 = type=cron,cronexp="15 2,14 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_shop_sign.js
+店铺签到 = type=cron,cronexp="15 2,14 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/444444/JDJB/main/jd_shop_sign.js
 ===========小火箭========
-店铺签到 = type=cron,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_shop_sign.jss, cronexpr="15 2,14 * * *", timeout=3600, enable=true
+店铺签到 = type=cron,script-path=https://raw.githubusercontent.com/444444/JDJB/main/jd_shop_sign.jss, cronexpr="15 2,14 * * *", timeout=3600, enable=true
 */
 const $ = new Env('店铺签到');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -27,22 +27,22 @@ let shopname=''
 const token = [
   "2B5C0F65AAB570D1736C8F24D1260D78",
   "F932E5DE653968BB1D92A2DFFD5318C7",
-  "90DBB523AD134F61A8335D24728C8EB7",
+  "C4FF5A919CEE68F9669A32950697694C",
   "39415200CB5E286A4DB604A54C901A13",
-  "C5FAE6D9F9B94F606370A7A98A5F2E70",
+  "E3EBFF80E029A1E1C13C8472BE23B822",
   "F5E2E3856C6FF1869CCE53153D237112",
   "7A64973CD1A0873108CB2E4740A86D7D",
-  "F337196AC5F550B3B7896F3F80089793",
+  "68EA947A0B9AF707FF8FF1C0661998B4",
   "45DBA1666FC56F3040F2F68396F1CDCE",
   "237DB8682E64A21BF18833A10E246162",
   "098FD50396245FA00EA629B20A533E3E",
   "DFB0150982F11A1EFB81A5B1399B7BD1",
   "F12032C7804D496FC82CCCBEDE205CA0",
-  "B52C0C73C735820922346460A4CE6CC4",
+  "755A1AA058A02D18CCB4D239E35FCB5B",
   "9A2F9AFF0153C3D1DDD5C9516C468F52",
   "2AEC5E975C792B413E569A4416C8F79D",
   "88C72E9A4F342606C7C98C601CCB3196",
-  "7352D6FB71BEDDF0ACAC6E4057640894",
+  "020702C2C96800D57EAB2FA017314A42",
   "329C618CD7B700B350C8CC8054B8622E",
   "7BFD202E8D2D071F5E79B6E9D3892020"
 ]
