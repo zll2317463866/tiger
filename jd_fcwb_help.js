@@ -19,7 +19,7 @@ cron "40 6,17 * * *" script-path=https://raw.githubusercontent.com/KingRan/JDJB/
 发财挖宝 = type=cron,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_fcwb.js, cronexpr="40 6,17 * * *", timeout=3600, enable=true
 
 * * */
-const $ = new Env('发财挖宝');
+const $ = new Env('发财挖宝-内部互助');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
