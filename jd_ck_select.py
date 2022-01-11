@@ -1,10 +1,14 @@
 */
+"""
+'Env =new Env("检测ck去重")'
+统计东哥历史红包
+cron:
+20 21 * * * 
+"""
 # 多ck去重，每10个隔一行输出，ck格式：
 #ck1&ck2&ck3&……
 #频道：https://t.me/+pellEgrbUethMGZl
-'''
-'Env =new Env("检测ck去重")'
-'''
+
 #觉得不错麻烦点个star谢谢
 #代码
 \*
