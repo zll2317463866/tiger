@@ -95,7 +95,7 @@ const pkTeamNum = () => Math.ceil(cookiesArr.length / 30)
         }
     }
     //
-    $.subSceneid = "ZNSZLh5"
+    $.subSceneid = "Sdu19Mo"
     const helpInfoArr = []
     helpCodeArr.length > 0 && helpInfoArr.push({
         flag: helpFlag,
