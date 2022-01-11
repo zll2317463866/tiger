@@ -3,6 +3,7 @@
 =================================Quantumultx=========================
 [task_local]
 #城城领现金
+#修改下34,35行的助力码，为tiger的两个，不修改则助力tiger库，爱你么么哒
 0 22,0-23/5 9-21 1 * gua_city.js, tag=城城领现金, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
  */
@@ -13,7 +14,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //自动抽奖 ，环境变量  JD_CITY_EXCHANGE
 let exchangeFlag = $.getdata('JD_CITY_EXCHANGE') || "false";//是否开启自动抽奖，建议活动快结束开启，默认关闭
 exchangeFlag = $.isNode() ? (process.env.JD_CITY_EXCHANGE ? process.env.JD_CITY_EXCHANGE : `${exchangeFlag}`) : ($.getdata('JD_CITY_EXCHANGE') ? $.getdata('JD_CITY_EXCHANGE') : `${exchangeFlag}`);
-// 优先助力[助力池]
+// 助力[助力池]，已经关闭了
 let helpShareFlag = "false";//是否优先助力[助力池]，默认否
 helpShareFlag = $.isNode() ? (process.env.JD_CITY_HELPSHARE ? process.env.JD_CITY_HELPSHARE : `${helpShareFlag}`) : ($.getdata('JD_CITY_HELPSHARE') ? $.getdata('JD_CITY_HELPSHARE') : `${helpShareFlag}`);
 
@@ -42,9 +43,9 @@ $.shareCodesArr = [];
   }
   // await requireConfig();
   if(helpShareFlag+"" == "true"){
-    console.log('脚本优先助力[助力池] 如需开启优先助力[内部账号]，请设置环境变量  JD_CITY_HELPSHARE 为false\n')
+    console.log('吊毛助力池是蛙总的，默认关闭，别想着助力池了，老老实实自己跑吧  \n')
   }else{
-    console.log('脚本优先助力[内部账号] 如需开启优先助力[助力池]，请设置环境变量  JD_CITY_HELPSHARE 为true\n')
+    console.log('起飞前看脚本内容，想直接运行的可以直接运行，爱你么么哒\n')
   }
   if (exchangeFlag+"" == "true") {
     console.log(`脚本自动抽奖`)
@@ -84,7 +85,7 @@ $.shareCodesArr = [];
       $.isLogin = true;
       $.nickName = '';
       message = '';
-      console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
+      console.log(`\n******开始起飞【吊毛账号${$.index}】${$.nickName || $.UserName}*********\n`);
       await getUA()
       await shareCodesFormat()
       for (let i = 0; i < $.newShareCodes.length && true; ++i) {
@@ -357,20 +358,20 @@ function shareCodesFormat() {
   return new Promise(async resolve => {
     // console.log(`第${$.index}个京东账号的助力码:::${$.shareCodesArr[$.index - 1]}`)
     $.newShareCodes = [];
-    if(helpShareFlag+"" != "true"){
-      if ($.shareCodesArr[$.index - 1]) {
-        $.newShareCodes = $.shareCodesArr[$.index - 1].split('@');
-      }
-    }
-    if($.index == 1) $.newShareCodes = [...inviteCodes,...$.newShareCodes]
-    try{
-      const readShareCodeRes = await readShareCode();
-      if (readShareCodeRes && readShareCodeRes.code === 200) {
-        $.newShareCodes = [...new Set([...$.newShareCodes, ...(readShareCodeRes.data || [])])];
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    // if(helpShareFlag+"" != "true"){
+    //   if ($.shareCodesArr[$.index - 1]) {
+    //     $.newShareCodes = $.shareCodesArr[$.index - 1].split('@');
+    //   }
+    // }
+    // if($.index == 1) $.newShareCodes = [...inviteCodes,...$.newShareCodes]
+    // try{
+    //   const readShareCodeRes = await readShareCode();
+    //   if (readShareCodeRes && readShareCodeRes.code === 200) {
+        $.newShareCodes = [...inviteCodes,...$.newShareCodes]
+    //   }
+    // } catch (e) {
+    //   console.log(e);
+    // }
     console.log(`第${$.index}个京东账号将要助力的好友${JSON.stringify($.newShareCodes)}`)
     resolve();
   })
