@@ -4,7 +4,7 @@
 [task_local]
 #城城领现金
 #修改下34,35行的助力码，为tiger的两个，不修改则助力tiger库，爱你么么哒
-0 22,0-23/5 9-21 1 * gua_city.js, tag=城城领现金, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+0 0 * * *  tag=城城领现金, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
  */
 const $ = new Env('城城领现金');
