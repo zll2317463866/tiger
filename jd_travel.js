@@ -1,3 +1,7 @@
+if (process.env.ZNS != 'true') {
+    console.log('脚本默认不运行,请设置环境变量ZNS为true运行,可能黑号,运行前最少手动进去过一次')
+    return
+}
 /*
 
 33 0,6-23/2 * * * jd_travel.js
@@ -95,7 +99,7 @@ const pkTeamNum = () => Math.ceil(cookiesArr.length / 30)
         }
     }
     //
-    $.subSceneid = "Sdu19Mo"
+    $.subSceneid = "ZNSZLh5"
     const helpInfoArr = []
     helpCodeArr.length > 0 && helpInfoArr.push({
         flag: helpFlag,
@@ -121,6 +125,7 @@ const pkTeamNum = () => Math.ceil(cookiesArr.length / 30)
         console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
         if (!$.isLogin) continue
         $.UA = s.UA
+        // $.ZooFaker = require('./utils/ZooFaker_Necklace.js').utils()
         $.ZooFaker = utils()
         $.joyytoken = s.joyytoken
         $.blog_joyytoken = s.blog_joyytoken
