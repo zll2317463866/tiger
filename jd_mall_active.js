@@ -182,11 +182,10 @@ async function getCoupons() {
             if (res.msg.indexOf("上限") !== -1 || res.msg.indexOf("未登录") !== -1) {
               $.max = true;
             }
-            if (res.code == 200 && res.data) {
-              if (res.data.couponType == 2) {
+            
                 console.log(`获得红包：${res.data.discount || 0}元`);
-              }
-            }
+            
+            
           } else {
             console.log(data);
           }
