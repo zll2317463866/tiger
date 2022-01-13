@@ -1,9 +1,18 @@
 /*
 年货节红包
-cron 0 0,8,20,22 * * *  https://raw.githubusercontent.com/smiek2121/scripts/master/gua_nhjRed.js
+cron 0 0,8,20,22 * * *  
 整点跑 红包几率大点
 
 
+
+返利变量：gua_nhjRed_rebateCode，若需要返利给自己，请自己修改环境变量[gua_nhjRed_rebateCode]
+export gua_nhjRed_rebateCode="Sdu19Mo"
+
+需要助力[火力值]的账号pin值
+如：【京东账号2】pin
+pin1换成对应的pin值 用,分开
+只助力2个 满了脚本自动从ck1开始替换未满的
+export gua_nhjRed_rebatePin="pin1,pin2"
 
 
 */
@@ -40,6 +49,7 @@ let shareCodeArr = {}
 $.runArr = {}
 const activeEndTime = '2022/01/27 00:00:00+08:00';//活动结束时间
 let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000;
+let timeH = $.time('H')
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', {
@@ -59,7 +69,6 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
   $.shareCode = ''
   $.again = false
   let getShare = false
-  let timeH = $.time('H')
   if(Object.getOwnPropertyNames($.shareCodeArr).length > 0 && ($.shareCodeArr["updateTime"] && $.time('d',new Date($.shareCodeArr["updateTime"] || Date.now()).getTime()) == $.time('d')) && timeH != 20 && timeH != 0){
     $.shareCodeArr = {}
     $.shareCodeArr["flag"] = true
@@ -140,10 +149,12 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
 
 async function run(type = 0){
   try{
+    console.log(rebateCode)
     resMsg = ''
     let s = 0
     let t = 0
     do{
+      rebateCode = rebateCodes
       if(t>2) s = 0
       $.flag = 0
       newCookie = ''
@@ -161,7 +172,7 @@ async function run(type = 0){
       }
       if(type == 0){
         let n = 0
-        if(Object.getOwnPropertyNames(shareCodeArr).length > s && $.time('H') != 10 && $.time('H') != 20){
+        if(Object.getOwnPropertyNames(shareCodeArr).length > s && timeH != 10 && timeH != 20){
           for(let i in shareCodeArr || {}){
             if(i == $.UserName) {
               $.flag = 1
@@ -418,7 +429,6 @@ function getUrl1() {
 
 function getUrl() {
   return new Promise(resolve => {
-    if($.again == true) rebateCode = 'S'+'C'+'L'+'y'+'Q'+'i'+'4'
     const options = {
       url: `https://u.jd.com/${rebateCode}${$.shareCode && "?s="+$.shareCode || ""}`,
       followRedirect:false,
@@ -434,7 +444,6 @@ function getUrl() {
       } catch (e) {
         $.logErr(e, resp);
       } finally {
-        if($.again == true) $.again = false
         resolve(data);
       }
     })
