@@ -138,7 +138,7 @@ let timeH = $.time('H')
   }
   if(Object.getOwnPropertyNames($.shareCodeArr).length > 0 && $.shareCodeArr["updateTime"] != pinUpdateTime) $.setdata($.shareCodeArr,'gua_JDnhjRed')
   if(message){
-    $.msg($.name, ``, `${message}\nhttps://u.jd.com/Sdu19Mo\n\n跳转到app 可查看助力情况`);
+    $.msg($.name, ``, `${message}\n\n\n跳转到app 可查看助力情况`);
     if ($.isNode()){
       // await notify.sendNotify(`${$.name}`, `${message}\n\nhttps://u.jd.com/Sdu19Mo\n跳转到app 可查看助力情况`);
     }
