@@ -1,7 +1,7 @@
 /*
 萌虎摇摇乐
 https://yearfestival.jd.com
-优先内部互助,剩余次数助力作者和助力池
+优先内部互助,内部纯净版本
 0 0,12,18 * * * jd_tiger.js
 转义自HW大佬
 const $ = new Env('萌虎摇摇乐');
