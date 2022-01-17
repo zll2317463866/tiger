@@ -49,7 +49,7 @@ async function main(ck){
     }
     let code = flCode;
     if(flCode === '999'){
-        let codeList = ['Sdu19Mo'];
+        let codeList = ['Sdu19Mo','SwfDVb6'];
         code =  getRandomArrayElements(codeList,1)[0];
     }
     let userName = decodeURIComponent(ck.match(/pt_pin=([^; ]+)(?=;?)/) && ck.match(/pt_pin=([^; ]+)(?=;?)/)[1])
