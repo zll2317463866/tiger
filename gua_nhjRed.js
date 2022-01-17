@@ -36,7 +36,7 @@ if ($.isNode()) {
 } else {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
-rebateCodes = $.isNode() ? (process.env.gua_nhjRed_rebateCode ? process.env.gua_nhjRed_rebateCode : `${rebateCodes}`) : ($.getdata('gua_nhjRed_rebateCode') ? $.getdata('gua_nhjRed_rebateCode') : `${rebateCodes}`);
+rebateCodes = $.isNode() ? (process.env.rebateCode ? process.env.rebateCode : `${rebateCodes}`) : ($.getdata('rebateCode') ? $.getdata('rebateCode') : `${rebateCodes}`);
 
 rebatePin = $.isNode() ? (process.env.gua_nhjRed_rebatePin ? process.env.gua_nhjRed_rebatePin : `${rebatePin}`) : ($.getdata('gua_nhjRed_rebatePin') ? $.getdata('gua_nhjRed_rebatePin') : `${rebatePin}`);
 let rebatePinArr = rebatePin && rebatePin.split(',') || []
