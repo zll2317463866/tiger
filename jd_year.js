@@ -65,7 +65,7 @@ if ($.isNode()) {
                 await task('get_user_info', `uuid=${$.uuid}&source=shareFriend`);
                 $.t1 = h();
                 $.t2 = y();
-                $.t3 = $.md5($.t1 + $.t2 + $.code + "0evb5nafqo2qaf7pu3v6xq6dx5jpvpab").toUpperCase();
+                $.t3 = $.md5($.t1 + $.t2 + $.code + "7af374814e103425e940da383be5c7d1").toUpperCase();
                 if ($.shareCodes && $.shareCodes.length) {
                     console.log(`\n开始内部助力`)
                     for (let j = 0; j < $.shareCodes.length; j++) {
@@ -95,7 +95,7 @@ async function main() {
             await task('get_user_info', `uuid=${$.uuid}&source=shareFriend`);
             $.t1 = h();
             $.t2 = y();
-            $.t3 = $.md5($.t1 + $.t2 + $.code + "0evb5nafqo2qaf7pu3v6xq6dx5jpvpab").toUpperCase();
+            $.t3 = $.md5($.t1 + $.t2 + $.code + "7af374814e103425e940da383be5c7d1").toUpperCase();
             await task('home_task_info', `uuid=${$.uuid}&source=shareFriend`);
             if ($.tasklist) {
                 await taskPost('get_light_task', `uuid=${$.uuid}&source=shareFriend`, { "now_date": `${nowdate}` });
