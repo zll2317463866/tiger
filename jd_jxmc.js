@@ -110,7 +110,7 @@ if ($.isNode()) {
     await pasture();
     await $.wait(2000);
   }
-  $.res = await getAuthorShareCode('')
+  $.res = await getAuthorShareCode('https://gitee.com/dragon996/tiger/raw/master/shareCodes%20/jxmc.json')
   await shareCodesFormat()
   for (let i = 0; i < cookiesArr.length; i++) {
     $.cookie = cookiesArr[i];
