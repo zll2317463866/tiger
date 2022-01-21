@@ -69,7 +69,7 @@ if ($.isNode()) {
             $.activityId = '4e3b9b6233104c199c0c44ff6edbc85d'
             $.activityShopId = '1000014803'
             $.activityUrl = `https://lzkjdz-isv.isvjcloud.com/pool/captain/${$.authorNum}?activityId=${$.activityId}&signUuid=${encodeURIComponent($.authorCode)}&adsource=null&shareuserid4minipg=null&shopid=${$.activityShopId}&lng=00.000000&lat=00.000000&sid=&un_area=`
-            await anjia();
+            await mn();
             await $.wait(3000)
             if ($.bean > 0) {
                 message += `\n【京东账号${$.index}】${$.nickName || $.UserName} \n       └ 获得 ${$.bean} 京豆。`
@@ -92,7 +92,7 @@ if ($.isNode()) {
     })
 
 
-async function anjia() {
+async function mn() {
     $.token = null;
     $.secretPin = null;
     $.openCardActivityId = null
