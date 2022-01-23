@@ -1,24 +1,4 @@
-/*
-京东饭粒
-已支持IOS双京东账号,Node.js支持N个京东账号
-脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
-============Quantumultx===============
-[task_local]
-#京东饭粒
-40 0,9,17 * * * https://raw.githubusercontent.com/KingRan/JDJB/main/jd_fanli.js, tag=京东饭粒, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxcfd.png, enabled=true
-
-================Loon==============
-[Script]
-cron "40 0,9,17 * * *" script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_fanli.js,tag=京东饭粒
-
-===============Surge=================
-京东饭粒 = type=cron,cronexp="40 0,9,17 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_fanli.js
-
-============小火箭=========
-京东饭粒 = type=cron,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_fanli.js, cronexpr="40 0,9,17 * * *", timeout=3600, enable=true
- */
-
-const $ = new Env('京东饭粒');
+const $ = new Env('搞基大神-饭粒');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -44,6 +24,7 @@ if ($.isNode()) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
+
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -62,9 +43,19 @@ if ($.isNode()) {
         }
         continue
       }
+          
+    
+    
     }
+
 await getTaskFinishCount()  
+
+
   }
+ 
+
+
+  
 })()
   .catch((e) => {
     $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
@@ -72,9 +63,12 @@ await getTaskFinishCount()
   .finally(() => {
     $.done();
   })
- function getTaskFinishCount() {
+
+    function getTaskFinishCount() {
  return new Promise((resolve) => {
+ 
   $.get(taskurl('getTaskFinishCount'), async (err, resp, data) => {
+ 
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -83,6 +77,9 @@ await getTaskFinishCount()
           if (safeGet(data)) {
             data = JSON.parse(data);
              if(data.code==1){
+
+                 
+             
                console.log(`总任务:${data.content.maxTaskCount}`)  
                console.log(`当前已做${data.content.finishCount}个`)  
 if(data.content.finishCount==8){
@@ -92,10 +89,13 @@ var task=data.content.maxTaskCount-data.content.finishCount
 for(let i=0;i<task;i++){
  await getTaskList()   
 }
+
              }             
              else if(data.code==0){
              console.log('黑号 快去买吧 叼毛')
+              
           }
+
           }
         }
       } catch (e) {
@@ -109,7 +109,9 @@ for(let i=0;i<task;i++){
  
   function getTaskList() {
  return new Promise((resolve) => {
+  
   $.get(taskurl('getTaskList'), async (err, resp, data) => {
+      
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -157,11 +159,18 @@ function saveTaskRecord(taskId,taskType) {
           if (safeGet(data)) {
             data = JSON.parse(data);
              if(data.code==1){
+
+                 
+             
                console.log(`${data.content.msg}`)  
+               
+
              }             
              else if(data.code==0){
              console.log(`任务已做完`)
+              
           }
+
           }
         }
       } catch (e) {
@@ -174,9 +183,12 @@ function saveTaskRecord(taskId,taskType) {
 }
 
 function saveTask(taskId,taskType) {
- return new Promise((resolve) => { 
+ return new Promise((resolve) => {
+  
   let body = {taskId: taskId, taskType: taskType}
   $.post(taskposturl('saveTaskRecord',body), async (err, resp, data) => {
+
+
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -188,11 +200,15 @@ function saveTask(taskId,taskType) {
 
                 uid=data.content.uid 
                 tt=data.content.tt
-               console.log(`等待10S`)    
+               console.log(`等待10S`)  
+               
+
              }             
              else if(data.code==0){
              //console.log(`${data.content.msg}`)
+              
           }
+
           }
         }
       } catch (e) {
@@ -203,6 +219,17 @@ function saveTask(taskId,taskType) {
     })
   })
 }
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
   function TotalBean() {
   return new Promise(async resolve => {
     const options = {
