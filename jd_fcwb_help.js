@@ -2,6 +2,9 @@
 发财挖宝
 更新时间：2021-10-30
 活动入口：极速版-发财挖宝
+活动部分账号验证h5st参数，请自行抓包参数添加
+小号助力大号，抓包助力成功链接在代码235行末尾添加h5st=xxx参数。
+h5st参数有时效性，抓包后请及时运行脚本
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ============Quantumultx===============
 [task_local]
@@ -19,7 +22,7 @@ cron "40 6,17 * * *" script-path=https://raw.githubusercontent.com/KingRan/JDJB/
 发财挖宝 = type=cron,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_fcwb.js, cronexpr="40 6,17 * * *", timeout=3600, enable=true
 
 * * */
-const $ = new Env('发财挖宝-内部互助');
+const $ = new Env('发财挖宝');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
@@ -51,10 +54,10 @@ let curRound = 1
         $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
         return;
     }
-    console.log(`\n注意：本脚本暂时只会执行助力，助力后，请手动进活动进行游戏（发财挖宝: 入口,极速版-》我的-》发财挖宝）\n`)
+	console.log("\n活动入口：极速版-》我的-》发财挖宝"+"\n请务必先手动进入活动后随意点击方块后执行脚本"+"\n若点击方块获得0.01红包即活动黑了。"+"\n没助力是因为验证h5st，自行抓包替换");
     let res = [];
 
-    try{res = await getAuthorShareCode('https://ghproxy.com/https://raw.githubusercontent.com/shufflewzc/updateTeam/main/shareCodes/fcwb.json');}catch (e) {}
+    try{res = await getAuthorShareCode('https://gitee.com/KingRan521/JD-Scripts/raw/master/shareCodes/fcwb.json');}catch (e) {}
      if(!res){res = [];}
     
     if(res.length > 0){
@@ -156,14 +159,15 @@ async function main() {
     if(fcwbinviter && fcwbinviteCode){
         console.log(`去助力:${fcwbinviter}`);
         await takeRequest(`happyDigHelp`,`{"linkId":"${link}","inviter":"${fcwbinviter}","inviteCode":"${fcwbinviteCode}"}`);
-        //console.log(`助力结果：${JSON.stringify(HelpInfo)}`);
+        //console.log(`助力结果：${JSON.stringify(homeInfo)}`);
     }
     $.freshFlag = false;
     if($.index === 1){
         fcwbinviter = homeInfo.markedPin;
         fcwbinviteCode = homeInfo.inviteCode;
+		await doTask();
     }
-    await doTask();
+
     if($.freshFlag){
         await $.wait(2000);
         homeInfo = await takeRequest(`happyDigHome`,`{"linkId":"${link}"}`,true);
@@ -180,24 +184,25 @@ async function doTask(){
             continue;
         }
         if(oneTask.taskType === 'BROWSE_CHANNEL'){
-            if(oneTask.id === 360){
+            if(oneTask.id === 454){
                 console.log(`任务：${oneTask.taskTitle},${oneTask.taskShowTitle},去执行`);
                 let doTask = await takeRequest(`apDoTask`,`{"linkId":"${link}","taskType":"${oneTask.taskType}","taskId":${oneTask.id},"channel":4,"itemId":"${encodeURIComponent(oneTask.taskSourceUrl)}","checkVersion":false}`);
                 console.log(`执行结果：${JSON.stringify(doTask)}`);
                 await $.wait(2000);
                 $.freshFlag = true;
             }
-            if(oneTask.id === 357){
-                // let detail = await takeRequest(`apTaskDetail`,`{"linkId":"${link}","taskType":"${oneTask.taskType}","taskId":${oneTask.id},"channel":4}`);
-                // await $.wait(1000);
-                // let status = detail.status;
-                // let taskItemList =  detail.taskItemList;
-                // for (let j = 0; j < taskItemList.length && j < (status.finishNeed - status.userFinishedTimes); j++) {
-                //     console.log(`浏览：${taskItemList[j].itemName}`);
-                //     let doTask = await takeRequest(`apDoTask`,`{"linkId":"${link}","taskType":"${oneTask.taskType}","taskId":${oneTask.id},"channel":4,"itemId":"${encodeURIComponent(taskItemList[j].itemId)}","checkVersion":false}`);
-                //     console.log(`执行结果：${JSON.stringify(doTask)}`);
-                //     await $.wait(2000);
-                // }
+            if(oneTask.id === 504){
+                 //let detail = await takeRequest(`apTaskDetail`,`{"linkId":"${link}","taskType":"${oneTask.taskType}","taskId":${oneTask.id},"channel":4}`);
+                 //await $.wait(1000);
+                 //let status = detail.status;
+                 //let taskItemList =  detail.taskItemList;
+                 //for (let j = 0; j < taskItemList.length && j < (status.finishNeed - status.userFinishedTimes); j++) {
+                     //console.log(`浏览：${taskItemList[j].itemName}`);
+                     //let doTask = await takeRequest(`apTaskTimeRecord`,`{"linkId":"${link}","taskType":"${oneTask.taskType}","taskId":${oneTask.id},"channel":4,"itemId":"${encodeURIComponent(taskItemList[j].itemId)}","checkVersion":false}`);
+                     //await $.wait(31000);
+					 //console.log(`执行结果：${JSON.stringify(doTask)}`);
+                     //await $.wait(2000);
+                 //}
             }
         }
     }
@@ -226,11 +231,8 @@ function safeGet(data) {
         return false;
     }
 }
-async function takeRequest(functionId,bodyInfo,h5stFlag = false){
+async function takeRequest(functionId,bodyInfo){
     let  url = `https://api.m.jd.com/?functionId=${functionId}&body=${encodeURIComponent(bodyInfo)}&t=${Date.now()}&appid=activities_platform&client=H5&clientVersion=1.0.0`;
-    if(h5stFlag){
-        //url = await getH5stUrl(functionId,bodyInfo);
-    }
     const headers = {
         'Host' : `api.m.jd.com`,
         'Accept' : `application/json, text/plain, */*`,
