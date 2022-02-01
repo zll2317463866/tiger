@@ -1,7 +1,8 @@
 /**
- 特务Z，默认选择左边战队
+ 特务Z
  脚本没有自动开卡，会尝试领取开卡奖励
-1 2,14,20 * * * jd_superBrand.js
+ cron 23 8,9 * * * https://raw.githubusercontent.com/star261/jd/main/scripts/jd_productZ4Brand.js
+ 一天要跑2次
  */
 const $ = new Env('特务Z');
 const notify = $.isNode() ? require('./sendNotify') : '';
