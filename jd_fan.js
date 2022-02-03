@@ -1,5 +1,6 @@
 /*
  粉丝互动
+ cron 40 2 * * * https://raw.githubusercontent.com/star261/jd/main/scripts/jd_fan.js
  蚊子腿活动，不定时更新,尽量自己改定时跑，一起冲容易挂掉
  环境变量：RUHUI,是否自动入会，默认不如会，设置RUHUI=1，则会自动入会
  环境变量：RUNCK,执行多少CK，默认全执行，设置RUNCK=10，则脚本只会运行前10个CK
