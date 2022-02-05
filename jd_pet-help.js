@@ -1,5 +1,5 @@
 
-const $ = new Env('搞鸡玩家-东东萌宠互助');
+const $ = new Env('东东萌宠互助');
 let cookiesArr = [], cookie = '', jdPetShareArr = [], isBox = false, notify, newShareCodes, allMessage = '';
 
 let shareCodes = []
