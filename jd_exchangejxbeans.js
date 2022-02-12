@@ -1,7 +1,6 @@
-/**
+/*
 过期京豆兑换为喜豆
-cron 33 9 * * * jd_exchangejxbeans.js
-TG频道：https://t.me/sheeplost
+33 22 * * * jd_exchangejxbeans.js
 */
 const $ = new Env('京豆兑换为喜豆');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -49,7 +48,6 @@ if ($.isNode()) {
                 continue
             }
             await domain();
-			await $.wait(3000);
         }
     }
     if (message !== "") {
