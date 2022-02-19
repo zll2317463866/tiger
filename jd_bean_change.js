@@ -1061,6 +1061,7 @@ async function bean() {
 	}
 	
 	await redPacket(); 
+	await getCoupon();
 }
 
 async function Monthbean() {
@@ -1569,6 +1570,107 @@ function redPacket() {
 			}
 		})
 	})
+}
+
+function getCoupon() {
+    return new Promise(resolve => {
+        let options = {
+            url: `https://wq.jd.com/activeapi/queryjdcouponlistwithfinance?state=1&wxadd=1&filterswitch=1&_=${Date.now()}&sceneval=2&g_login_type=1&callback=jsonpCBKB&g_ty=ls`,
+            headers: {
+                'authority': 'wq.jd.com',
+                "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+                'accept': '*/*',
+                'referer': 'https://wqs.jd.com/',
+                'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
+                'cookie': cookie
+            }
+        }
+        $.get(options, async(err, resp, data) => {
+            try {
+                data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
+                let couponTitle = '';
+                let couponId = '';
+                // 删除可使用且非超市、生鲜、京贴;
+                let useable = data.coupon.useable;
+                $.todayEndTime = new Date(new Date(new Date().getTime()).setHours(23, 59, 59, 999)).getTime();
+                $.tomorrowEndTime = new Date(new Date(new Date().getTime() + 24 * 60 * 60 * 1000).setHours(23, 59, 59, 999)).getTime();
+				$.platFormInfo="";
+                for (let i = 0; i < useable.length; i++) {
+					//console.log(useable[i]);
+                    if (useable[i].limitStr.indexOf('全品类') > -1) {
+                        $.beginTime = useable[i].beginTime;
+                        if ($.beginTime < new Date().getTime() && useable[i].quota < 20 && useable[i].coupontype === 1) {                           
+							//$.couponEndTime = new Date(parseInt(useable[i].endTime)).Format('yyyy-MM-dd');
+                            $.couponName = useable[i].limitStr;
+							if (useable[i].platFormInfo) 
+								$.platFormInfo = useable[i].platFormInfo;
+							
+							$.message += `【全品类券】满${useable[i].quota}减${useable[i].discount}元`;
+							
+							if (useable[i].endTime < $.todayEndTime) {
+								$.message += `(今日过期,${$.platFormInfo})\n`;
+							} else if (useable[i].endTime < $.tomorrowEndTime) {
+								$.message += `(明日将过期,${$.platFormInfo})\n`;
+							} else {
+								$.message += `(${$.platFormInfo})\n`;
+							}
+							
+                        }
+                    }
+                    /* if (useable[i].couponTitle.indexOf('极速版APP活动') > -1) {						
+                        $.couponEndTime = useable[i].endTime;
+                        $.startIndex = useable[i].couponTitle.indexOf('-') - 3;
+                        $.endIndex = useable[i].couponTitle.indexOf('元') + 1;
+                        $.couponName = useable[i].couponTitle.substring($.startIndex, $.endIndex);
+
+                        if ($.couponEndTime < $.todayEndTime) {
+                            $.message += `【极速版券】${$.couponName}(今日过期)\n`;
+                        } else if ($.couponEndTime < $.tomorrowEndTime) {
+                            $.message += `【极速版券】${$.couponName}(明日将过期)\n`;
+                        } else {
+                            $.couponEndTime = timeFormat(parseInt($.couponEndTime));
+                            $.message += `【极速版券】${$.couponName}(有效期至${$.couponEndTime})\n`;
+                        }
+
+                    } */
+                    //8是支付券， 7是白条券
+                    if (useable[i].couponStyle == 7 || useable[i].couponStyle == 8) {
+                        $.beginTime = useable[i].beginTime;
+                        if ($.beginTime > new Date().getTime() || useable[i].quota > 50 || useable[i].coupontype != 1) {
+                            continue;
+                        }
+                        
+                        if (useable[i].couponStyle == 8) {
+                            $.couponType = "支付立减";
+                        }else{
+							$.couponType = "白条优惠";
+						}
+						if(useable[i].discount<useable[i].quota)
+							$.message += `【${$.couponType}】满${useable[i].quota}减${useable[i].discount}元`;
+						else
+							$.message += `【${$.couponType}】立减${useable[i].discount}元`;
+                        if (useable[i].platFormInfo) 
+                            $.platFormInfo = useable[i].platFormInfo;                            
+                        
+                        //$.couponEndTime = new Date(parseInt(useable[i].endTime)).Format('yyyy-MM-dd');
+						
+                        if (useable[i].endTime < $.todayEndTime) {
+                            $.message += `(今日过期,${$.platFormInfo})\n`;
+                        } else if (useable[i].endTime < $.tomorrowEndTime) {
+                            $.message += `(明日将过期,${$.platFormInfo})\n`;
+                        } else {
+                            $.message += `(${$.platFormInfo})\n`;
+                        }
+                    }
+                }
+            } catch (e) {
+                $.logErr(e, resp);
+            }
+            finally {
+                resolve();
+            }
+        })
+    })
 }
 
 function getJdZZ() {
