@@ -20,7 +20,7 @@ function randomString(e) {
 }
 $.InviteList = []
 $.innerInviteList = [];
-const HelpAuthorFlag = true;//是否助力作者SH  true 助力，false 不助力
+const HelpAuthorFlag = false;//是否助力作者SH  true 助力，false 不助力
 
 // 热气球接客 每次运行接客次数
 let serviceNum = 10;// 每次运行接客次数
