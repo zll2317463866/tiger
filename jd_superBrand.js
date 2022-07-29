@@ -1,10 +1,11 @@
-/**
- 特务Z
+/*
+ 特务集卡
  脚本没有自动开卡，会尝试领取开卡奖励
- cron 23 8,9 * * * https://raw.githubusercontent.com/star261/jd/main/scripts/jd_productZ4Brand.js
- 一天要跑2次
- */
-const $ = new Env('特务Z');
+cron:35 10,18,20 * * *
+
+35 10,18,20 * * * jd_superBrand.js
+* */
+const $ = new Env('特务Z-II');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [];
@@ -12,6 +13,7 @@ let UA = ``;
 $.allInvite = [];
 let useInfo = {};
 $.helpEncryptAssignmentId = '';
+$.flag = false
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
         cookiesArr.push(jdCookieNode[item])
@@ -50,6 +52,7 @@ if ($.isNode()) {
         }catch (e) {
             console.log(JSON.stringify(e));
         }
+		if ($.flag) return;
         await $.wait(1000);
     }
     if($.allInvite.length > 0 ){
@@ -82,8 +85,9 @@ async function main() {
     $.runFlag = false;
     $.activityInfo = {};
     await takeRequest('superBrandSecondFloorMainPage');
-    if(JSON.stringify($.activityInfo) === '{}'){
-        console.log(`获取活动详情失败`);
+    if($.bizCode == 'MP001'){
+        console.log(`本期活动结束，期待下期。。。`);
+		$.flag = true
         return ;
     }
     console.log(`获取活动详情成功`);
@@ -116,13 +120,13 @@ async function doTask(){
             console.log(`任务：${$.oneTask.assignmentName}，已完成`);
             continue;
         }
-        if($.oneTask.assignmentType === 3 || $.oneTask.assignmentType === 0 || $.oneTask.assignmentType === 1 || $.oneTask.assignmentType === 7){
+        if($.oneTask.assignmentType === 3  || $.oneTask.assignmentType === 7 || $.oneTask.assignmentType === 1){  //7是开卡  3是关注店铺 1是浏览会场
             if($.oneTask.assignmentType === 7){
                 console.log(`任务：${$.oneTask.assignmentName}，尝试领取开卡奖励；（不会自动开卡，如果你已经是会员，则会领取成功）`);
             }else{
                 console.log(`任务：${$.oneTask.assignmentName}，去执行`);
             }
-            let subInfo = $.oneTask.ext.followShop || $.oneTask.ext.brandMemberList || $.oneTask.ext.shoppingActivity ||'';
+            let subInfo = $.oneTask.ext.followShop || $.oneTask.ext.brandMemberList || $.oneTask.ext.shoppingActivity;
             if(subInfo && subInfo[0]){
                 $.runInfo = subInfo[0];
             }else{
@@ -155,6 +159,7 @@ async function doTask(){
                     await $.wait(3000);
                 }
             }
+						$.runFlag = true;
             //}
         }
     }
@@ -212,6 +217,7 @@ function dealReturn(type, data) {
     }
     switch (type) {
         case 'superBrandSecondFloorMainPage':
+						$.bizCode = data.data.bizCode;	
             if(data.code === '0' &&  data.data && data.data.result){
                 $.activityInfo = data.data.result;
             }
@@ -242,7 +248,7 @@ function dealReturn(type, data) {
                 $.runFlag = false;
                 console.log(`抽奖失败`);
             }
-            console.log(JSON.stringify(data));
+            //console.log(JSON.stringify(data));
             break;
 
         case 'help':
