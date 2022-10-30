@@ -26,7 +26,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
-const helpAuthor = false; // 是否帮助作者助力，false打开通知推送，true关闭通知推送
+const helpAuthor = true; // 是否帮助作者助力，false打开通知推送，true关闭通知推送
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', uuid = '', message;
 if ($.isNode()) {
@@ -71,7 +71,7 @@ function randomWord(randomFlag, min, max){
       $.nickName = '';
       message = '';
       uuid = randomString()
-      await TotalBean();
+      //await TotalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
@@ -82,6 +82,7 @@ function randomWord(randomFlag, min, max){
         continue
       }
       await jdBeanHome();
+      await $.wait(20000);
     }
   }
   for (let i = 0; i < cookiesArr.length; i++) {
