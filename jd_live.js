@@ -2,24 +2,15 @@
 京东直播
 活动结束时间未知
 活动入口：京东APP首页-京东直播
-地址：https://h5.m.jd.com/babelDiy/Zeus/2zwQnu4WHRNfqMSdv69UPgpZMnE2/index.html/
-已支持IOS双京东账号,Node.js支持N个京东账号
-脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
+
+cron:40 18-22 * * *
 ============Quantumultx===============
 [task_local]
 #京东直播
-50 12-14 * * * https://raw.githubusercontent.com/KingRan/JDJB/main/jd_live.js, tag=京东直播, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+40 18-22 * * * jd_live.js, tag=京东直播, enabled=true
 
-================Loon==============
-[Script]
-cron "50 12-14 * * *" script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_live.js,tag=京东直播
-
-===============Surge=================
-京东直播 = type=cron,cronexp="50 12-14 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_live.js
-
-============小火箭=========
-京东直播 = type=cron,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_live.js, cronexpr="50 12-14 * * *", timeout=3600, enable=true
  */
+
 const $ = new Env('京东直播');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -42,6 +33,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
+
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -49,6 +41,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       $.index = i + 1;
       $.isLogin = true;
       $.nickName = '';
+      $.hot = false;
       message = '';
       await TotalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
@@ -61,7 +54,8 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
         continue
       }
       uuid = randomString(40)
-      await jdHealth()
+      await jdLive()
+      await $.wait(parseInt(Math.random() * 3000 + 3000, 10))
     }
   }
 })()
@@ -71,12 +65,12 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     .finally(() => {
       $.done();
     })
-async function jdHealth() {
+async function jdLive() {
   $.bean = 0
   await getTaskList()
   await sign()
-  message += `领奖完成，共计获得 ${$.bean} 京豆\n`
-  await showMsg();
+  // message += `领奖完成，共计获得 ${$.bean} 京豆\n`
+  // await showMsg();
 }
 
 function getTs() {
@@ -105,22 +99,26 @@ function getTaskList() {
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
-            if (data.data.starLiveList) {
-              for (let key of Object.keys(data.data.starLiveList)) {
-                let vo = data.data.starLiveList[key]
+            if (data.data.recommendList) {
+              for (let key of Object.keys(data.data.recommendList)) {
+                let vo = data.data.recommendList[key]
                 if (vo.state !== 3) {
-                  let authorId = (await getauthorId(vo.extra.liveId)).data.author.authorId
-                  await superTask(vo.extra.liveId, authorId)
-                  await awardTask("starViewTask", vo.extra.liveId)
+                  // let authorId = (await getauthorId(vo.data.liveId)).data.author.authorId
+                  await superTask(vo.data.liveId, vo.data.authorId)
+                  await awardTask("starViewTask", vo.data.liveId)
                 }
+                if ($.hot) break
               }
             }
             console.log(`去做分享直播间任务`)
             await shareTask()
+            await $.wait(2000);
             await awardTask()
+            await $.wait(2000);
             console.log(`去做浏览直播间任务`)
             await viewTask()
             await awardTask("commonViewTask")
+            await $.wait(2000);
           }
         }
       } catch (e) {
@@ -134,10 +132,9 @@ function getTaskList() {
 
 async function getauthorId(liveId) {
   let functionId = `liveDetailV910`
-  let body = escape(JSON.stringify({"liveId":liveId,"fromId":"","liveList":[],"sku":"","source":"17","d":"","direction":"","isNeedVideo":1}))
+  let body = encodeURIComponent(JSON.stringify({"liveId":liveId,"fromId":"","liveList":[],"sku":"","source":"17","d":"","direction":"","isNeedVideo":1}))
   let uuid = randomString(16)
-  let sign = await getSign(functionId, decodeURIComponent(body), uuid)
-  let url = `https://api.m.jd.com/client.action?functionId=${functionId}&build=167774&client=apple&clientVersion=10.1.0&uuid=${uuid}&${sign}`
+  let url = `https://api.m.jd.com/client.action?functionId=${functionId}&build=167774&client=apple&clientVersion=10.1.0&uuid=${uuid}`
   return new Promise(resolve => {
     $.post(taskPostUrl(functionId, body, url), async (err, resp, data) => {
       try {
@@ -147,6 +144,7 @@ async function getauthorId(liveId) {
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
+            console.log(`\n输出：${JSON.stringify(data)}\n`)
           }
         }
       } catch (e) {
@@ -160,10 +158,9 @@ async function getauthorId(liveId) {
 
 async function superTask(liveId, authorId) {
   let functionId = `liveChannelReportDataV912`
-  let body = escape(JSON.stringify({"liveId":liveId,"type":"viewTask","authorId":authorId,"extra":{"time":60}}))
+  let body = encodeURIComponent(JSON.stringify({"liveId":liveId,"type":"viewTask","authorId":authorId,"extra":{"time":60}}))
   let uuid = randomString(16)
-  let sign = await getSign(functionId, decodeURIComponent(body), uuid)
-  let url = `https://api.m.jd.com/client.action?functionId=${functionId}&build=167774&client=apple&clientVersion=10.1.0&uuid=${uuid}&${sign}`
+  let url = `https://api.m.jd.com/client.action?functionId=${functionId}&build=167774&client=apple&clientVersion=10.1.0&uuid=${uuid}`
   return new Promise(resolve => {
     $.post(taskPostUrl(functionId, body, url), async (err, resp, data) => {
       try {
@@ -226,8 +223,8 @@ function shareTask() {
   })
 }
 
-function awardTask(type="shareTask", liveId = '2942545') {
-  let body = {"type":type,"liveId":liveId}
+function awardTask(type = "shareTask", liveId = '2942545') {
+  let body = { "type": type, "liveId": liveId }
   return new Promise(resolve => {
     $.post(taskUrl("getChannelTaskRewardToM", body), async (err, resp, data) => {
       try {
@@ -241,6 +238,9 @@ function awardTask(type="shareTask", liveId = '2942545') {
               $.bean += data.sum
               console.log(`任务领奖成功，获得 ${data.sum} 京豆`);
               message += `任务领奖成功，获得 ${data.sum} 京豆\n`
+            } else if (data.msg.indexOf('擦肩') > -1) {
+              console.log(`任务领奖失败，${data.msg}`)
+              $.hot = true;
             } else {
               console.log(`任务领奖失败，${data.msg}`)
             }
@@ -254,6 +254,7 @@ function awardTask(type="shareTask", liveId = '2942545') {
     })
   })
 }
+
 function sign() {
   return new Promise(resolve => {
     $.get(taskUrl("getChannelTaskRewardToM", {"type":"signTask","itemId":"1"}), async (err, resp, data) => {
@@ -282,42 +283,6 @@ function sign() {
   })
 }
 
-function getSign(functionid, body, uuid) {
-  return new Promise(async resolve => {
-    let data = {
-      "functionId":functionid,
-      "body":body,
-      "uuid":uuid,
-      "client":"apple",
-      "clientVersion":"10.1.0"
-    }
-    let HostArr = ['jdsign.cf', 'signer.nz.lu']
-    let Host = HostArr[Math.floor((Math.random() * HostArr.length))]
-    let options = {
-      url: `https://cdn.nz.lu/ddo`,
-      body: JSON.stringify(data),
-      headers: {
-        Host,
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
-      },
-      timeout: 30 * 1000
-    }
-    $.post(options, (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} getSign API请求失败，请检查网路重试`)
-        } else {
-
-        }
-      } catch (e) {
-        $.logErr(e, resp)
-      } finally {
-        resolve(data);
-      }
-    })
-  })
-}
 
 function taskPostUrl(function_id, body = {}, url=null) {
   if (url && (function_id === "liveChannelReportDataV912" || function_id === "liveDetailV910")) body = `body=${body}`
@@ -342,7 +307,7 @@ function taskPostUrl(function_id, body = {}, url=null) {
 }
 function taskUrl(function_id, body = {}) {
   return {
-    url: `${JD_API_HOST}?functionId=${function_id}&appid=h5-live&body=${escape(JSON.stringify(body))}&v=${new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000}&uuid=${uuid}`,
+    url: `${JD_API_HOST}?functionId=${function_id}&appid=h5-live&body=${encodeURIComponent(JSON.stringify(body))}&v=${new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000}&uuid=${uuid}`,
     headers: {
       "Host": "api.m.jd.com",
       "Accept": "application/json, text/plain, */*",
@@ -367,7 +332,6 @@ function randomString(e) {
     n += t.charAt(Math.floor(Math.random() * a));
   return n
 }
-
 function TotalBean() {
   return new Promise(async resolve => {
     const options = {
