@@ -13,10 +13,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //自动抽奖 ，环境变量  JD_CITY_EXCHANGE
 let exchangeFlag = $.getdata('JD_CITY_EXCHANGE') || "true";//是否开启自动抽奖，建议活动快结束开启，默认关闭
 exchangeFlag = $.isNode() ? (process.env.JD_CITY_EXCHANGE ? process.env.JD_CITY_EXCHANGE : `${exchangeFlag}`) : ($.getdata('JD_CITY_EXCHANGE') ? $.getdata('JD_CITY_EXCHANGE') : `${exchangeFlag}`);
-// 优先助力[助力池]
-let helpShareFlag = "true";//是否优先助力[助力池]，默认是
-helpShareFlag = $.isNode() ? (process.env.JD_CITY_HELPSHARE ? process.env.JD_CITY_HELPSHARE : `${helpShareFlag}`) : ($.getdata('JD_CITY_HELPSHARE') ? $.getdata('JD_CITY_HELPSHARE') : `${helpShareFlag}`);
-$.whitelist = "";// 优先获取助力码的ckPin 用&隔开 pin值(填中文
+$.whitelist = "jd_597a54478d063";// 优先获取助力码的ckPin 用&隔开 pin值(填中文
 $.whitelist = $.isNode() ? (process.env.JD_CITY_WHITELIST ? process.env.JD_CITY_WHITELIST : `${$.whitelist}`) : ($.getdata('JD_CITY_WHITELIST') ? $.getdata('JD_CITY_WHITELIST') : `${$.whitelist}`);
 
 
