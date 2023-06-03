@@ -17,9 +17,9 @@ https://t.me/+pellEgrbUethMGZl</B>
 
 便宜服务器看下方，按需求买吧
 
-<B>阿里云服务器</B>
+<a href = "https://www.aliyun.com/activity/daily/bestoffer?userCode=sdnzf2bx">阿里云服务器</a>
 
-[https://www.aliyun.com/activity/ambassador/share-gift/goods?taskCode=xfyh2107&recordId=784554&userCode=sdnzf2bx](https://www.aliyun.com/activity/daily/bestoffer?userCode=sdnzf2bx)
+
 
 <B>腾讯云服务器</B>
 
