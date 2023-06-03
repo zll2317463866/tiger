@@ -19,7 +19,7 @@ https://t.me/+pellEgrbUethMGZl</B>
 
 <B>阿里云服务器</B>
 
-https://www.aliyun.com/activity/ambassador/share-gift/goods?taskCode=xfyh2107&recordId=784554&userCode=sdnzf2bx
+[https://www.aliyun.com/activity/ambassador/share-gift/goods?taskCode=xfyh2107&recordId=784554&userCode=sdnzf2bx](https://www.aliyun.com/activity/daily/bestoffer?userCode=sdnzf2bx)
 
 <B>腾讯云服务器</B>
 
