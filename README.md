@@ -3,7 +3,7 @@
 
 <h1>q群号：664140985</h1>
 <B>tg备用联系方式：
-https://t.me/+pellEgrbUethMGZl</B>
+https://t.me/+pellEgrbUethMGZl</B> 
 
 
 <h1>为防止找不到组织请关注公众号<h1/>
