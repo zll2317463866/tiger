@@ -1,4 +1,4 @@
-不知道哪些狗，原本的群被干没了<br>新群号：832563280<br>
+<h1>q群号：664140985</h1>
 <B>tg备用联系方式：
 https://t.me/+pellEgrbUethMGZl</B>
 
@@ -30,21 +30,8 @@ https://curl.qcloud.com/IUQvwMbi
                                     维护不易，支持的铁子赏个水钱也是莫大的支持！！！
  ![54__6fec1201ee853353e7399ac5d2597c9d_90dd81835322631168c8bc8fb7111707](https://user-images.githubusercontent.com/83000809/126744495-21a4d77f-8a0d-4483-96a4-100c9dccdae2.png)
 
-关于互助码的事项，这里统一说下
-下面拿2.2的做例子：
-![image](https://user-images.githubusercontent.com/83000809/126745729-a5a5b690-bbe7-4240-a070-82dfbb5b4f3f.png)
-![image](https://user-images.githubusercontent.com/83000809/126745797-a0cea73e-3d0e-403f-ab15-30d234031f7a.png)
 
-                     这两张图要保持一致其余无需修改，这是最简单的内部互助
-至于2.8版本的内部互助方法，请到下方链接查看详细教程
-
-↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
-https://blog.csdn.net/z_1231/article/details/118695453
-
-注意2.8的教程方法只是让它回到2.2的使用方法，其余都一致！
-
-更多教程请关注公众号
+为防止找不到组织请关注公众号
 
 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
