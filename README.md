@@ -17,13 +17,10 @@ https://t.me/+pellEgrbUethMGZl</B>
 
 便宜服务器看下方，按需求买吧
 
-<a href = "https://www.aliyun.com/activity/daily/bestoffer?userCode=sdnzf2bx">阿里云服务器</a>
+<a href = "https://www.aliyun.com/activity/daily/bestoffer?userCode=sdnzf2bx">阿里云服务器 <--点我直达</a>
+  
+<a href = "[https://www.aliyun.com/activity/daily/bestoffer?userCode=sdnzf2bx](https://curl.qcloud.com/IUQvwMbi)">腾讯云服务器 <--点我直达</a>
 
-
-
-<B>腾讯云服务器</B>
-
-https://curl.qcloud.com/IUQvwMbi
 
 
 
