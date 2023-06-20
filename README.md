@@ -1,4 +1,4 @@
-国内仓库拉取：
+国内仓库拉取（如果拉取过慢，请自行添加代理）：
 
 
 ```
@@ -6,7 +6,7 @@ ql repo https://gitee.com/dragon996/tiger.git "jd_|jx_|jdCookie" "activity|backU
 
 ```
 
-国外仓库拉取：
+国外仓库拉取（推荐）：
 
 ```
 ql repo https://github.com/zll2317463866/tiger.git "jd_|jx_|jdCookie" "activity|backUp" "^jd[^_]|USER|utils|function|sign|sendNotify|ql"
