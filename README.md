@@ -1,4 +1,19 @@
-某东几乎无水了，本仓库只负责日常有水脚本维护，同时研究别的项目赚钱，为了防止丢失请加交流群
+国内仓库拉取：
+
+
+```
+ql repo https://gitee.com/dragon996/tiger.git "jd_|jx_|jdCookie" "activity|backUp" "^jd[^_]|USER|utils|function|sign|sendNotify|ql"
+
+```
+
+国外仓库拉取：
+
+```
+ql repo https://github.com/zll2317463866/tiger.git "jd_|jx_|jdCookie" "activity|backUp" "^jd[^_]|USER|utils|function|sign|sendNotify|ql"
+```
+
+
+
 
 
 <h1>q群号：664140985</h1>
