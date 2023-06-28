@@ -35,7 +35,7 @@ https://t.me/+pellEgrbUethMGZl</B>
 <a href = "https://curl.qcloud.com/cBNPXPYP">腾讯云服务器【每日限购】 <--点我直达</a><br/>
 <a href = "https://curl.qcloud.com/xLhI9Yhc">腾讯云服务器【大额优惠卷】 <--点我直达</a>
   
-            青龙面板依赖
+                                         **青龙面板依赖** 
 NodeJs
 
 ```
