@@ -12,7 +12,7 @@ import requests
 from os import environ, path
 from fake_useragent import UserAgent
 
-'''Env = new Env("京东签到")'''
+'''Env = new Env("京东话费")'''
 def get_environ (O0OO0OOOOOOOOO000 ,OO00O00OO00O0000O ="",O00OO0OO0O0O0000O =True ):#line:1:def get_environ(JD_COOKIE, default="", output=True):
     def O0OO0OOO0OOOO000O ():#line:2:def no_read():
         if O00OO0OO0O0O0000O :#line:3:if output:
