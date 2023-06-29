@@ -69,6 +69,7 @@ requests
 canvas
 ping3
 jieba
+fake-useragent
 ```
 
 Linux
