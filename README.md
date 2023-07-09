@@ -25,7 +25,7 @@ https://t.me/+pellEgrbUethMGZl</B>
 
 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
-![qrcode_for_gh_048a498b68f1_258](https://user-images.githubusercontent.com/83000809/127257735-e6032090-d04c-413d-8094-22ab36b3caa1.jpg)
+![输入图片说明](%E4%B8%80%E9%9D%A2%E7%8E%A9%E5%AE%B6.jpg)
 
 <h3>便宜服务器看下方，按需求买吧<h3/>
 
