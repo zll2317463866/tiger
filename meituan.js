@@ -1,0 +1,1 @@
+const $ = new Env('美团');
