@@ -2,7 +2,7 @@
 /*
 美团
 环境变量，名称：mt_ck，值：xxxxx
-关于mt_ck获取方法，手机浏览器打开http://h5.waimai.meituan.com 登录后，查看请求头Cookie全部复制进来就行了
+关于mt_ck获取方法，手机浏览器打开h5.waimai.meituan.com 登录后，查看请求头Cookie全部复制进来就行了
 定时规则0 11,14,17,21,0,1,2,3 * * *
 作者：tiger
 '''
