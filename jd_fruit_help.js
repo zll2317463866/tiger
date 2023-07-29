@@ -46,7 +46,7 @@ const urlSchema = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%2
             message = '';
             subTitle = '';
             option = {};
-            $.UA = require('./USER_AGENTS').UARAM();
+            $.UA = require('./USER_AGENTS').USER_AGENT;
             await shareCodesFormat();
             await jdFruit();
         }
