@@ -16,16 +16,11 @@ ql repo https://github.com/zll2317463866/tiger.git "jd_|jx_|jdCookie" "activity|
 
 
 
-<h1>q群号：664140985</h1>
+
 <B>tg备用联系方式：
 https://t.me/+pellEgrbUethMGZl</B> 
 
 
-<h1>为防止找不到组织请关注公众号<h1/>
-
-↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
-![输入图片说明](%E4%B8%80%E9%9D%A2%E7%8E%A9%E5%AE%B6.jpg)
 
 <h3>便宜服务器看下方，按需求买吧<h3/>
 
